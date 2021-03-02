@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "Rss Reader - service for aggregating RSS feeds",
   "main": "index.js",
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
     "eslint": "^7.21.0"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
