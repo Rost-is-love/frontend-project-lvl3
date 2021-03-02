@@ -1,0 +1,23 @@
+{
+  "name": "@hexlet/code",
+  "version": "1.0.0",
+  "description": "Rss Reader - service for aggregating RSS feeds",
+  "main": "index.js",
+  "dependencies": {
+    "eslint": "^7.21.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rost-is-love/frontend-project-lvl3.git"
+  },
+  "author": "Rostislav Antonov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Rost-is-love/frontend-project-lvl3/issues"
+  },
+  "homepage": "https://github.com/Rost-is-love/frontend-project-lvl3#readme"
+}
