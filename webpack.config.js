@@ -7,8 +7,20 @@ module.exports = {
     path: __dirname + '/dist',
     filename: 'index_bundle.js',
   },
+  devServer: {
+    historyApiFallback: true,
+    contentBase: path.resolve(__dirname, 'dist'),
+    open: true,
+    compress: true,
+    hot: true,
+    port: 3000,
+  },
   module: {
     rules: [
+      {
+        test: /\.html$/,
+        loader: 'html-loader',
+      },
       {
         test: /\.css$/i,
         use: ['style-loader', 'css-loader'],
