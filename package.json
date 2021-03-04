@@ -4,9 +4,11 @@
   "description": "Rss Reader - service for aggregating RSS feeds",
   "private": true,
   "dependencies": {
+    "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
     "lodash": "^4.17.21",
-    "on-change": "^2.2.3"
+    "on-change": "^2.2.3",
+    "yup": "^0.32.9"
   },
   "devDependencies": {
     "css-loader": "^5.1.1",
