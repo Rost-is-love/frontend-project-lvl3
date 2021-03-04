@@ -4,8 +4,10 @@ import onChange from 'on-change';
 import * as yup from 'yup';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './style.css';
-import './index.html';
+import '../index.html';
+import '../style.css';
+
+console.log('я тут');
 
 const schema = yup.object().shape({
   url: yup.string().url().required(),
@@ -33,7 +35,6 @@ const updateValidationState = (watchedState) => {
   const error = validate(watchedState.form.fields);
   watchedState.form.valid = _.isEqual(error, '');
   watchedState.form.error = error;
-  console.log(watchedState.form.error);
 };
 
 const renderError = (input, error) => {
@@ -71,7 +72,7 @@ const processStateHandler = (processState) => {
       submitButton.disabled = true;
       break;
     case 'finished':
-      container.innerHTML = 'User Created!';
+      // container.innerHTML = 'User Created!';
       break;
     default:
       throw new Error(`Unknown state: ${processState}`);
@@ -99,7 +100,6 @@ form.addEventListener('submit', async (e) => {
   updateValidationState(watchedState);
 
   if (_.isEqual(watchedState.form.error, '')) {
-    console.log('сендинг');
     watchedState.form.processState = 'sending';
     try {
       const data = await axios.get(input.value);

@@ -1,11 +1,15 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
+// const isDev = process.env.NODE_ENV === 'development';
+// const isProd = !isDev;
+
 module.exports = {
-  entry: './src/index.js',
+  context: path.resolve(__dirname, 'src'),
+  entry: './js/main.js',
   output: {
-    path: __dirname + '/dist',
-    filename: 'index_bundle.js',
+    filename: './js/main.js',
+    path: path.resolve(__dirname, 'dist'),
   },
   devServer: {
     historyApiFallback: true,
@@ -25,13 +29,17 @@ module.exports = {
         test: /\.css$/i,
         use: ['style-loader', 'css-loader'],
       },
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: ['babel-loader'],
+      },
     ],
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'Custom template',
-      // Load a custom template (lodash by default)
-      template: './src/index.html',
+      template: path.resolve(__dirname, 'src/index.html'),
+      filename: 'index.html',
     }),
   ],
 };
