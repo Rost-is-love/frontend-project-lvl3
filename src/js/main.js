@@ -3,11 +3,10 @@ import _ from 'lodash';
 import onChange from 'on-change';
 import * as yup from 'yup';
 import axios from 'axios';
+import render from './render.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../index.html';
 import '../style.css';
-
-console.log('я тут');
 
 const schema = yup.object().shape({
   url: yup.string().url().required(),
@@ -53,7 +52,9 @@ const state = {
     },
     valid: true,
     error: '',
+    data: {},
   },
+  feeds: false,
 };
 
 const form = document.querySelector('.rss-form');
@@ -88,6 +89,9 @@ const watchedState = onChange(state, (path, value) => {
     case 'form.processError':
       renderError(input, value);
       break;
+    case 'form.data':
+      render(value.data, watchedState);
+      break;
     default:
       break;
   }
@@ -102,8 +106,10 @@ form.addEventListener('submit', async (e) => {
   if (_.isEqual(watchedState.form.error, '')) {
     watchedState.form.processState = 'sending';
     try {
-      const data = await axios.get(input.value);
-      watchedState.form.processState = 'finished';
+      const data = await axios.get(
+        `https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(input.value)}`,
+      );
+      watchedState.form.data = data;
     } catch (err) {
       watchedState.form.processError = errorMessages.network.error;
       watchedState.form.processState = 'failed';
