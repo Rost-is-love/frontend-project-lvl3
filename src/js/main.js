@@ -112,8 +112,11 @@ form.addEventListener('submit', (e) => {
       watchedState.feeds.data.push(value);
       watchedState.form.processState = 'sending';
       try {
+        const url = new URL(
+          `https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(value)}`,
+        );
         axios
-          .get(`https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(value)}`)
+          .get(url)
           // eslint-disable-next-line no-return-assign
           .then((response) => (watchedState.form.data = response));
         /* const data = await axios({
