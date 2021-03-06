@@ -114,6 +114,7 @@ form.addEventListener('submit', (e) => {
       try {
         axios
           .get(`https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(value)}`)
+          // eslint-disable-next-line no-return-assign
           .then((response) => (watchedState.form.data = response));
         /* const data = await axios({
           method: 'get',
