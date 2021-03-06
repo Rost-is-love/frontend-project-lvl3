@@ -3,7 +3,7 @@ import _ from 'lodash';
 import onChange from 'on-change';
 import * as yup from 'yup';
 import axios from 'axios';
-import render from './render.js';
+import { render, renderError, renderSuccess } from './render.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../index.html';
 import '../style.css';
@@ -18,6 +18,9 @@ const errorMessages = {
   },
   url: {
     error: 'Ссылка должна быть валидным URL',
+  },
+  feeds: {
+    error: 'RSS уже существует',
   },
 };
 
@@ -36,13 +39,6 @@ const updateValidationState = (watchedState) => {
   watchedState.form.error = error;
 };
 
-const renderError = (input, error) => {
-  const feedbackEl = document.querySelector('.feedback');
-  feedbackEl.classList.add('text-danger');
-  feedbackEl.textContent = error;
-  input.classList.add('is-invalid');
-};
-
 const state = {
   form: {
     processState: 'filling',
@@ -54,7 +50,10 @@ const state = {
     error: '',
     data: {},
   },
-  feeds: false,
+  feeds: {
+    data: [],
+    empty: true,
+  },
 };
 
 const form = document.querySelector('.rss-form');
@@ -73,7 +72,8 @@ const processStateHandler = (processState) => {
       submitButton.disabled = true;
       break;
     case 'finished':
-      // container.innerHTML = 'User Created!';
+      submitButton.disabled = false;
+      renderSuccess(input);
       break;
     default:
       throw new Error(`Unknown state: ${processState}`);
@@ -97,23 +97,38 @@ const watchedState = onChange(state, (path, value) => {
   }
 });
 
-form.addEventListener('submit', async (e) => {
+form.addEventListener('submit', (e) => {
   e.preventDefault();
 
-  watchedState.form.fields.url = input.value;
-  updateValidationState(watchedState);
+  const { value } = input;
 
-  if (_.isEqual(watchedState.form.error, '')) {
-    watchedState.form.processState = 'sending';
-    try {
-      const data = await axios.get(
-        `https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(input.value)}`,
-      );
-      watchedState.form.data = data;
-    } catch (err) {
-      watchedState.form.processError = errorMessages.network.error;
-      watchedState.form.processState = 'failed';
-      throw err;
+  if (watchedState.feeds.data.indexOf(value) !== -1) {
+    watchedState.form.processError = errorMessages.feeds.error;
+  } else {
+    watchedState.form.fields.url = value;
+    updateValidationState(watchedState);
+
+    if (_.isEqual(watchedState.form.error, '')) {
+      watchedState.feeds.data.push(value);
+      watchedState.form.processState = 'sending';
+      try {
+        axios
+          .get(`https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(value)}`)
+          .then((response) => (watchedState.form.data = response));
+        /* const data = await axios({
+          method: 'get',
+          url: `https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(value)}`,
+          data: {
+            status: {
+              content_type: null,
+            },
+          },
+        }); */
+      } catch (err) {
+        watchedState.form.processError = errorMessages.network.error;
+        watchedState.form.processState = 'failed';
+        throw err;
+      }
     }
   }
 });
