@@ -113,7 +113,8 @@ form.addEventListener('submit', (e) => {
       watchedState.form.processState = 'sending';
       try {
         const url = new URL(
-          `https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(value)}`,
+          `/get?url=${encodeURIComponent(value)}`,
+          'https://hexlet-allorigins.herokuapp.com',
         );
         axios
           .get(url)
