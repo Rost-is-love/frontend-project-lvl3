@@ -1,5 +1,4 @@
 /* eslint-disable no-param-reassign */
-import parse from './parsers.js';
 
 export const renderError = (input, error) => {
   const feedbackEl = document.querySelector('.feedback');
@@ -48,9 +47,7 @@ const createNewPost = (item, postsList) => {
   postsList.prepend(liEl);
 };
 
-export const render = (data, watchedState) => {
-  const doc = parse(data);
-  console.log(doc);
+export const render = (doc, watchedState) => {
   const mainTitle = doc.querySelector('title');
   const mainDscr = doc.querySelector('description');
   const feeds = document.querySelector('.feeds');

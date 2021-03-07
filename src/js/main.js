@@ -24,6 +24,11 @@ const errorMessages = {
   },
 };
 
+const parse = (data) => {
+  const parser = new DOMParser();
+  return parser.parseFromString(data, 'text/xml');
+};
+
 const validate = (fields) => {
   try {
     schema.validateSync(fields, { abortEarly: false });
@@ -90,7 +95,7 @@ const watchedState = onChange(state, (path, value) => {
       renderError(input, value);
       break;
     case 'form.data':
-      render(value.data, watchedState);
+      render(value, watchedState);
       break;
     default:
       break;
@@ -109,31 +114,23 @@ form.addEventListener('submit', (e) => {
     updateValidationState(watchedState);
 
     if (_.isEqual(watchedState.form.error, '')) {
-      watchedState.feeds.data.push(value);
       watchedState.form.processState = 'sending';
-      try {
-        const url = new URL(
-          `/get?url=${encodeURIComponent(value)}`,
-          'https://hexlet-allorigins.herokuapp.com',
-        );
-        axios
-          .get(url)
-          // eslint-disable-next-line no-return-assign
-          .then((response) => (watchedState.form.data = response));
-        /* const data = await axios({
-          method: 'get',
-          url: `https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(value)}`,
-          data: {
-            status: {
-              content_type: null,
-            },
-          },
-        }); */
-      } catch (err) {
-        watchedState.form.processError = errorMessages.network.error;
-        watchedState.form.processState = 'failed';
-        throw err;
-      }
+      axios
+        .get(`https://hexlet-allorigins.herokuapp.com/raw?url=${value}`)
+        .then((response) => {
+          const doc = parse(response.data);
+          if (doc.querySelector('parsererror')) {
+            throw new Error(errorMessages.network.error);
+          } else {
+            watchedState.feeds.data.push(value);
+            watchedState.form.data = doc;
+          }
+        })
+        .catch((err) => {
+          watchedState.form.processError = errorMessages.network.error;
+          watchedState.form.processState = 'failed';
+          throw err;
+        });
     }
   }
 });
