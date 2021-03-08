@@ -3,26 +3,45 @@ import _ from 'lodash';
 import onChange from 'on-change';
 import * as yup from 'yup';
 import axios from 'axios';
+import i18next from 'i18next';
 import { render, renderError, renderSuccess } from './render.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../index.html';
 import '../style.css';
 
+const runApp = async () => {
+  await i18next.init({
+    lng: 'ru',
+    debug: false,
+    resources: {
+      ru: {
+        translation: {
+          errorMessages: {
+            network: 'Ресурс не содержит валидный RSS',
+            url: 'Ссылка должна быть валидным URL',
+            feeds: 'RSS уже существует',
+          },
+          successMessages: {
+            feeds: 'RSS успешно загружен',
+          },
+          buttons: {
+            post: 'Просмотр',
+          },
+          titles: {
+            feeds: 'Фиды',
+            posts: 'Посты',
+          },
+        },
+      },
+    },
+  });
+};
+
+runApp();
+
 const schema = yup.object().shape({
   url: yup.string().url().required(),
 });
-
-const errorMessages = {
-  network: {
-    error: 'Ресурс не содержит валидный RSS',
-  },
-  url: {
-    error: 'Ссылка должна быть валидным URL',
-  },
-  feeds: {
-    error: 'RSS уже существует',
-  },
-};
 
 const parse = (data) => {
   const parser = new DOMParser();
@@ -34,7 +53,7 @@ const validate = (fields) => {
     schema.validateSync(fields, { abortEarly: false });
     return '';
   } catch {
-    return errorMessages.url.error;
+    return i18next.t('errorMessages.url');
   }
 };
 
@@ -77,7 +96,7 @@ const processStateHandler = (processState) => {
       break;
     case 'finished':
       submitButton.disabled = false;
-      renderSuccess(input);
+      renderSuccess(input, i18next.t('successMessages.feeds'));
       break;
     default:
       throw new Error(`Unknown state: ${processState}`);
@@ -104,7 +123,7 @@ form.addEventListener('submit', (e) => {
   const { value } = input;
 
   if (watchedState.feeds.links.indexOf(value) !== -1) {
-    watchedState.form.processError = errorMessages.feeds.error;
+    watchedState.form.processError = i18next.t('errorMessages.feeds');
   } else {
     watchedState.form.fields.url = value;
     updateValidationState(watchedState);
@@ -116,7 +135,7 @@ form.addEventListener('submit', (e) => {
         .then((response) => {
           const doc = parse(response.data);
           if (doc.querySelector('parsererror')) {
-            throw new Error(errorMessages.network.error);
+            throw new Error(i18next.t('errorMessages.network'));
           } else {
             watchedState.feeds.links.push(value);
           }
@@ -124,7 +143,7 @@ form.addEventListener('submit', (e) => {
         })
         .then((doc) => render(doc, watchedState))
         .catch((err) => {
-          watchedState.form.processError = errorMessages.network.error;
+          watchedState.form.processError = i18next.t('errorMessages.network');
           watchedState.form.processState = 'failed';
           throw err;
         });

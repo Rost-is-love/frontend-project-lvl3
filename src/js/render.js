@@ -1,4 +1,5 @@
 /* eslint-disable no-param-reassign */
+import i18next from 'i18next';
 
 export const renderError = (input, error) => {
   const feedbackEl = document.querySelector('.feedback');
@@ -7,10 +8,10 @@ export const renderError = (input, error) => {
   input.classList.add('is-invalid');
 };
 
-export const renderSuccess = (input) => {
+export const renderSuccess = (input, message) => {
   const feedbackEl = document.querySelector('.feedback');
   feedbackEl.classList.add('text-success');
-  feedbackEl.textContent = 'RSS успешно загружен';
+  feedbackEl.textContent = message;
 
   if (feedbackEl.classList.contains('text-danger')) {
     feedbackEl.classList.remove('text-danger');
@@ -40,7 +41,7 @@ const createNewPost = (item, postsList) => {
   btnEl.setAttribute('data-id', '2');
   btnEl.setAttribute('data-toggle', 'modal');
   btnEl.setAttribute('data-target', '#modal');
-  btnEl.textContent = 'Просмотр';
+  btnEl.textContent = i18next.t('buttons.post');
 
   liEl.append(linkEl);
   liEl.append(btnEl);
@@ -61,8 +62,8 @@ export const render = (doc, watchedState) => {
     const newPosstUl = document.createElement('ul');
     newFeedsUl.classList.add('list-group', 'mb-5');
     newPosstUl.classList.add('list-group');
-    newFeedsTitle.textContent = 'Фиды';
-    newPostsTitle.textContent = 'Посты';
+    newFeedsTitle.textContent = i18next.t('titles.feeds');
+    newPostsTitle.textContent = i18next.t('titles.posts');
     feeds.append(newFeedsTitle);
     feeds.append(newFeedsUl);
     posts.append(newPostsTitle);
