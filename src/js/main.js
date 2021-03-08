@@ -53,10 +53,9 @@ const state = {
     },
     valid: true,
     error: '',
-    data: {},
   },
   feeds: {
-    data: [],
+    links: [],
     empty: true,
   },
 };
@@ -94,9 +93,6 @@ const watchedState = onChange(state, (path, value) => {
     case 'form.processError':
       renderError(input, value);
       break;
-    case 'form.data':
-      render(value, watchedState);
-      break;
     default:
       break;
   }
@@ -107,7 +103,7 @@ form.addEventListener('submit', (e) => {
 
   const { value } = input;
 
-  if (watchedState.feeds.data.indexOf(value) !== -1) {
+  if (watchedState.feeds.links.indexOf(value) !== -1) {
     watchedState.form.processError = errorMessages.feeds.error;
   } else {
     watchedState.form.fields.url = value;
@@ -122,10 +118,11 @@ form.addEventListener('submit', (e) => {
           if (doc.querySelector('parsererror')) {
             throw new Error(errorMessages.network.error);
           } else {
-            watchedState.feeds.data.push(value);
-            watchedState.form.data = doc;
+            watchedState.feeds.links.push(value);
           }
+          return doc;
         })
+        .then((doc) => render(doc, watchedState))
         .catch((err) => {
           watchedState.form.processError = errorMessages.network.error;
           watchedState.form.processState = 'failed';
