@@ -22,20 +22,22 @@ export const renderSuccess = (input, message) => {
   input.focus();
 };
 
-const createNewPost = (item, postsList) => {
+export const createNewPost = (item, postsList, watchedState) => {
   const liEl = document.createElement('li');
   const linkEl = document.createElement('a');
   const btnEl = document.createElement('button');
-  const title = item.querySelector('title');
-  const itemLink = item.querySelector('link');
+  const title = item.querySelector('title').innerHTML;
+  const itemLink = item.querySelector('link').innerHTML;
+
+  watchedState.posts.links.push(itemLink);
 
   liEl.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start');
   linkEl.classList.add('font-weight-bold');
   linkEl.setAttribute('data-id', '2');
   linkEl.setAttribute('target', '_blank');
   linkEl.setAttribute('rel', 'noopener noreferrer');
-  linkEl.setAttribute('href', itemLink.innerHTML);
-  linkEl.textContent = title.innerHTML;
+  linkEl.setAttribute('href', itemLink);
+  linkEl.textContent = title;
   btnEl.classList.add('btn', 'btn-primary', 'btn-sm');
   btnEl.setAttribute('type', 'button');
   btnEl.setAttribute('data-id', '2');
@@ -84,7 +86,7 @@ export const render = (doc, watchedState) => {
   feedsList.prepend(feedItem);
 
   postsItems.forEach((item) => {
-    createNewPost(item, postsList);
+    createNewPost(item, postsList, watchedState);
   });
 
   watchedState.form.processState = 'finished';

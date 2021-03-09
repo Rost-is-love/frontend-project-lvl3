@@ -4,40 +4,42 @@ import onChange from 'on-change';
 import * as yup from 'yup';
 import axios from 'axios';
 import i18next from 'i18next';
-import { render, renderError, renderSuccess } from './render.js';
+// prettier-ignore
+import {
+  render,
+  renderError,
+  renderSuccess,
+  createNewPost,
+} from './render.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../index.html';
 import '../style.css';
 
-const runApp = () => {
-  i18next.init({
-    lng: 'ru',
-    debug: false,
-    resources: {
-      ru: {
-        translation: {
-          errorMessages: {
-            network: 'Ресурс не содержит валидный RSS',
-            url: 'Ссылка должна быть валидным URL',
-            feeds: 'RSS уже существует',
-          },
-          successMessages: {
-            feeds: 'RSS успешно загружен',
-          },
-          buttons: {
-            post: 'Просмотр',
-          },
-          titles: {
-            feeds: 'Фиды',
-            posts: 'Посты',
-          },
+i18next.init({
+  lng: 'ru',
+  debug: false,
+  resources: {
+    ru: {
+      translation: {
+        errorMessages: {
+          network: 'Ресурс не содержит валидный RSS',
+          url: 'Ссылка должна быть валидным URL',
+          feeds: 'RSS уже существует',
+        },
+        successMessages: {
+          feeds: 'RSS успешно загружен',
+        },
+        buttons: {
+          post: 'Просмотр',
+        },
+        titles: {
+          feeds: 'Фиды',
+          posts: 'Посты',
         },
       },
     },
-  });
-};
-
-runApp();
+  },
+});
 
 const schema = yup.object().shape({
   url: yup.string().url().required(),
@@ -63,6 +65,29 @@ const updateValidationState = (watchedState) => {
   watchedState.form.error = error;
 };
 
+const checkUpdates = (watchedState) => {
+  watchedState.feeds.links.forEach((link) => {
+    axios
+      .get(`https://hexlet-allorigins.herokuapp.com/raw?url=${link}`)
+      .then((response) => {
+        const doc = parse(response.data);
+        return doc;
+      })
+      .then((doc) => {
+        const posts = doc.querySelectorAll('item');
+        const postsCont = document.querySelector('.posts');
+        const postsList = postsCont.querySelector('.list-group');
+        posts.forEach((post) => {
+          const postLink = post.querySelector('link').innerHTML;
+          if (watchedState.posts.links.indexOf(postLink) === -1) {
+            createNewPost(post, postsList, watchedState);
+          }
+        });
+      });
+  });
+  setTimeout(() => checkUpdates(watchedState), 5000);
+};
+
 const state = {
   form: {
     processState: 'filling',
@@ -76,6 +101,9 @@ const state = {
   feeds: {
     links: [],
     empty: true,
+  },
+  posts: {
+    links: [],
   },
 };
 
@@ -141,7 +169,10 @@ form.addEventListener('submit', (e) => {
           }
           return doc;
         })
-        .then((doc) => render(doc, watchedState))
+        .then((doc) => {
+          render(doc, watchedState);
+          setTimeout(() => checkUpdates(watchedState), 5000);
+        })
         .catch((err) => {
           watchedState.form.processError = i18next.t('errorMessages.network');
           watchedState.form.processState = 'failed';
