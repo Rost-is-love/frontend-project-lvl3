@@ -9,8 +9,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../index.html';
 import '../style.css';
 
-const runApp = async () => {
-  await i18next.init({
+const runApp = () => {
+  i18next.init({
     lng: 'ru',
     debug: false,
     resources: {
