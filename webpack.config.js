@@ -27,10 +27,10 @@ module.exports = {
         loader: 'html-loader',
       },
       // [{ test: /\.txt$/, use: 'raw-loader' }],
-      {
+      /* {
         test: /\.scss$/,
         use: ['style-loader', 'css-loader', 'sass-loader'],
-      },
+      }, */
       // {
       //   test: /\.css$/i,
       //   use: [
@@ -43,7 +43,7 @@ module.exports = {
       //     },
       //   ],
       // },
-      // { test: /\.css$/, use: ['style-loader', 'css-loader', 'postcss-loader'] },
+      { test: /\.css$/, use: ['style-loader', 'css-loader', 'postcss-loader'] },
       {
         test: /\.js$/,
         exclude: /node_modules/,
