@@ -12,7 +12,7 @@ import {
   createNewPost,
 } from './render.js';
 import createModal from './modal.js';
-import 'bootstrap/js/dist/modal';
+import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 i18next.init({
