@@ -12,7 +12,6 @@ import {
   createNewPost,
 } from './render.js';
 import createModal from './modal.js';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/js/dist/modal';
 import '../index.html';
 import '../style.css';
