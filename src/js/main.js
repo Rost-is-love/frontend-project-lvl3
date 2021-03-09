@@ -13,7 +13,6 @@ import {
 } from './render.js';
 import createModal from './modal.js';
 import 'bootstrap/js/dist/modal';
-import '../index.html';
 import '../style.css';
 
 i18next.init({
