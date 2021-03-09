@@ -11,7 +11,9 @@ import {
   renderSuccess,
   createNewPost,
 } from './render.js';
+import createModal from './modal.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/js/dist/modal';
 import '../index.html';
 import '../style.css';
 
@@ -83,7 +85,8 @@ const checkUpdates = (watchedState) => {
             createNewPost(post, postsList, watchedState);
           }
         });
-      });
+      })
+      .then(() => createModal(watchedState));
   });
   setTimeout(() => checkUpdates(watchedState), 5000);
 };
@@ -104,6 +107,8 @@ const state = {
   },
   posts: {
     links: [],
+    dscrs: {},
+    read: [],
   },
 };
 
@@ -173,6 +178,7 @@ form.addEventListener('submit', (e) => {
           render(doc, watchedState);
           setTimeout(() => checkUpdates(watchedState), 5000);
         })
+        .then(() => createModal(watchedState))
         .catch((err) => {
           watchedState.form.processError = i18next.t('errorMessages.network');
           watchedState.form.processState = 'failed';

@@ -22,25 +22,30 @@ export const renderSuccess = (input, message) => {
   input.focus();
 };
 
+let id = 0;
+
 export const createNewPost = (item, postsList, watchedState) => {
+  id += 1;
   const liEl = document.createElement('li');
   const linkEl = document.createElement('a');
   const btnEl = document.createElement('button');
   const title = item.querySelector('title').innerHTML;
   const itemLink = item.querySelector('link').innerHTML;
+  const descr = item.querySelector('description').innerHTML;
 
   watchedState.posts.links.push(itemLink);
+  watchedState.posts.dscrs[id] = descr;
 
   liEl.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start');
   linkEl.classList.add('font-weight-bold');
-  linkEl.setAttribute('data-id', '2');
+  linkEl.setAttribute('data-id', `${id}`);
   linkEl.setAttribute('target', '_blank');
   linkEl.setAttribute('rel', 'noopener noreferrer');
   linkEl.setAttribute('href', itemLink);
   linkEl.textContent = title;
   btnEl.classList.add('btn', 'btn-primary', 'btn-sm');
   btnEl.setAttribute('type', 'button');
-  btnEl.setAttribute('data-id', '2');
+  btnEl.setAttribute('data-id', `${id}`);
   btnEl.setAttribute('data-toggle', 'modal');
   btnEl.setAttribute('data-target', '#modal');
   btnEl.textContent = i18next.t('buttons.post');
