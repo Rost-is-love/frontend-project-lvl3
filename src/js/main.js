@@ -12,8 +12,8 @@ import {
   createNewPost,
 } from './render.js';
 import createModal from './modal.js';
-import 'bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/js/dist/modal';
+import '../style.scss';
 
 i18next.init({
   lng: 'ru',
