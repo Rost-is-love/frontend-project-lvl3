@@ -25,6 +25,7 @@ module.exports = {
         test: /\.html$/,
         loader: 'html-loader',
       },
+      // [{ test: /\.txt$/, use: 'raw-loader' }],
       {
         test: /\.scss$/,
         use: ['style-loader', 'css-loader', 'sass-loader'],
