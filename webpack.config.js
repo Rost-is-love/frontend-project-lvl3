@@ -1,15 +1,15 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-// const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 // const isDev = process.env.NODE_ENV === 'development';
 // const isProd = !isDev;
 
 module.exports = {
   context: path.resolve(__dirname, 'src'),
-  entry: './js/main.js',
+  entry: './index.js',
   output: {
-    filename: './js/main.js',
+    filename: './index.js',
     path: path.resolve(__dirname, 'dist'),
   },
   devServer: {
@@ -31,19 +31,19 @@ module.exports = {
         test: /\.scss$/,
         use: ['style-loader', 'css-loader', 'sass-loader'],
       }, */
-      // {
-      //   test: /\.css$/i,
-      //   use: [
-      //     MiniCssExtractPlugin.loader,
-      //     {
-      //       loader: 'css-loader',
-      //       options: {
-      //         sourceMap: true,
-      //       },
-      //     },
-      //   ],
-      // },
-      { test: /\.css$/, use: ['style-loader', 'css-loader', 'postcss-loader'] },
+      {
+        test: /\.css$/i,
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: 'css-loader',
+            options: {
+              sourceMap: true,
+            },
+          },
+        ],
+      },
+      // { test: /\.css$/, use: ['style-loader', 'css-loader', 'postcss-loader'] },
       {
         test: /\.js$/,
         exclude: /node_modules/,
@@ -52,9 +52,9 @@ module.exports = {
     ],
   },
   plugins: [
-    // new MiniCssExtractPlugin({
-    //   filename: '[name].css',
-    // }),
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+    }),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'src/index.html'),
       filename: 'index.html',
