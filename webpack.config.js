@@ -1,36 +1,25 @@
-const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const path = require('path');
 
-// const isDev = process.env.NODE_ENV === 'development';
-// const isProd = !isDev;
+const PATHS = {
+  src: path.join(__dirname, 'src'),
+  public: path.join(__dirname, 'public'),
+};
 
 module.exports = {
-  context: path.resolve(__dirname, 'src'),
-  entry: './index.js',
+  target: 'web',
+  mode: process.env.NODE_ENV || 'development',
+  entry: {
+    main: PATHS.src,
+  },
   output: {
-    filename: './index.js',
-    path: path.resolve(__dirname, 'dist'),
+    path: PATHS.public,
+    filename: '[name].js',
   },
-  devServer: {
-    historyApiFallback: true,
-    contentBase: path.resolve(__dirname, 'dist'),
-    open: true,
-    compress: true,
-    hot: true,
-    port: 3000,
-  },
+  devtool: process.env.NODE_ENV === 'production' ? false : 'source-map',
   module: {
     rules: [
-      {
-        test: /\.html$/,
-        loader: 'html-loader',
-      },
-      // [{ test: /\.txt$/, use: 'raw-loader' }],
-      /* {
-        test: /\.scss$/,
-        use: ['style-loader', 'css-loader', 'sass-loader'],
-      }, */
       {
         test: /\.css$/i,
         use: [
@@ -43,21 +32,22 @@ module.exports = {
           },
         ],
       },
-      // { test: /\.css$/, use: ['style-loader', 'css-loader', 'postcss-loader'] },
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: ['babel-loader'],
-      },
     ],
+  },
+  devServer: {
+    historyApiFallback: true,
+    contentBase: path.resolve(__dirname, 'dist'),
+    open: true,
+    compress: true,
+    hot: true,
+    port: 3000,
   },
   plugins: [
     new MiniCssExtractPlugin({
       filename: '[name].css',
     }),
     new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, 'src/index.html'),
-      filename: 'index.html',
+      template: 'index.html',
     }),
   ],
 };
