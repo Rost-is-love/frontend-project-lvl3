@@ -42924,6 +42924,7 @@ const checkUpdates = (watchedState) => {
       links: [],
       dscrs: {},
       read: [],
+      count: 0,
     },
   };
 
@@ -43091,10 +43092,9 @@ const renderSuccess = (input, message) => {
   input.focus();
 };
 
-let id = 0;
-
 const createNewPost = (item, postsList, watchedState) => {
-  id += 1;
+  watchedState.posts.count += 1;
+  const id = watchedState.posts.count;
   const liEl = document.createElement('li');
   const linkEl = document.createElement('a');
   const btnEl = document.createElement('button');

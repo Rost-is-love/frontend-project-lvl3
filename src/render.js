@@ -22,10 +22,9 @@ export const renderSuccess = (input, message) => {
   input.focus();
 };
 
-let id = 0;
-
 export const createNewPost = (item, postsList, watchedState) => {
-  id += 1;
+  watchedState.posts.count += 1;
+  const id = watchedState.posts.count;
   const liEl = document.createElement('li');
   const linkEl = document.createElement('a');
   const btnEl = document.createElement('button');

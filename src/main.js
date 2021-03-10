@@ -125,6 +125,7 @@ export default () => {
       links: [],
       dscrs: {},
       read: [],
+      count: 0,
     },
   };
 
