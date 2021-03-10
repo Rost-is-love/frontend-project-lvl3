@@ -42823,7 +42823,6 @@ const parse = (data) => {
   // }
   const parser = new DOMParser();
   const doc = parser.parseFromString(data, 'text/xml');
-  console.log(doc, '1');
   if (doc.querySelector('parsererror')) {
     throw new Error('notValidRss');
   }
@@ -42986,7 +42985,6 @@ const checkUpdates = (watchedState) => {
         axios__WEBPACK_IMPORTED_MODULE_3___default().get(buildUrl(value))
           .then((response) => {
             const doc = parse(response.data.contents);
-            console.log(doc, '2');
             watchedState.feeds.links.push(value);
             return doc;
           })
@@ -42996,7 +42994,6 @@ const checkUpdates = (watchedState) => {
           })
           .then(() => (0,_modal_js__WEBPACK_IMPORTED_MODULE_6__.default)(watchedState))
           .catch((err) => {
-            console.log(err);
             // prettier-ignore
             const message = err.message === 'notValidRss'
               ? i18next__WEBPACK_IMPORTED_MODULE_4__.default.t('errorMessages.rss')
@@ -43031,13 +43028,10 @@ __webpack_require__.r(__webpack_exports__);
     btn.addEventListener('click', (e) => {
       e.preventDefault();
       const id = btn.getAttribute('data-id');
-      console.log(btn, id);
       const titleEl = btn.previousSibling;
       const titleText = titleEl.innerHTML;
       const titleLink = titleEl.getAttribute('href');
       const descr = watchedState.posts.dscrs[id];
-      console.log(descr);
-      // const modal = document.querySelector('.modal');
       const modalTitle = document.querySelector('.modal-title');
       const modalBody = document.querySelector('.modal-body');
       const modalLink = document.querySelector('div.modal-footer > a');
@@ -43045,7 +43039,6 @@ __webpack_require__.r(__webpack_exports__);
       modalTitle.textContent = titleText;
       modalBody.textContent = descr;
       modalLink.setAttribute('href', titleLink);
-      // modal.classList.add('show');
 
       if (watchedState.posts.read.indexOf(id) === -1) {
         titleEl.classList.remove('font-weight-bold');
@@ -43108,7 +43101,6 @@ const createNewPost = (item, postsList, watchedState) => {
   const title = item.querySelector('title').innerHTML;
   const itemLink = item.querySelector('link').innerHTML;
   const descr = item.querySelector('description').innerHTML;
-  console.log(id, title, descr);
 
   watchedState.posts.links.push(itemLink);
   watchedState.posts.dscrs[id] = descr;

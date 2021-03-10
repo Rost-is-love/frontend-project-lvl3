@@ -23,7 +23,6 @@ const parse = (data) => {
   // }
   const parser = new DOMParser();
   const doc = parser.parseFromString(data, 'text/xml');
-  console.log(doc, '1');
   if (doc.querySelector('parsererror')) {
     throw new Error('notValidRss');
   }
@@ -188,7 +187,6 @@ export default () => {
           .get(buildUrl(value))
           .then((response) => {
             const doc = parse(response.data.contents);
-            console.log(doc, '2');
             watchedState.feeds.links.push(value);
             return doc;
           })
@@ -198,7 +196,6 @@ export default () => {
           })
           .then(() => createModal(watchedState))
           .catch((err) => {
-            console.log(err);
             // prettier-ignore
             const message = err.message === 'notValidRss'
               ? i18next.t('errorMessages.rss')
