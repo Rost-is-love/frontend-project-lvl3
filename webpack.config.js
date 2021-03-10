@@ -4,7 +4,7 @@ const path = require('path');
 
 const PATHS = {
   src: path.join(__dirname, 'src'),
-  public: path.join(__dirname, 'public'),
+  dist: path.join(__dirname, 'dist'),
 };
 
 module.exports = {
@@ -14,7 +14,7 @@ module.exports = {
     main: PATHS.src,
   },
   output: {
-    path: PATHS.public,
+    path: PATHS.dist,
     filename: '[name].js',
   },
   devtool: process.env.NODE_ENV === 'production' ? false : 'source-map',
