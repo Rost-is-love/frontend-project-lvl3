@@ -53,7 +53,11 @@ export const createNewPost = (item, postsList, watchedState) => {
 
   liEl.append(linkEl);
   liEl.append(btnEl);
-  postsList.prepend(liEl);
+  if (watchedState.feeds.empty) {
+    postsList.append(liEl);
+  } else {
+    postsList.prepend(liEl);
+  }
 };
 
 export const render = (doc, watchedState) => {
@@ -76,7 +80,6 @@ export const render = (doc, watchedState) => {
     feeds.append(newFeedsUl);
     posts.append(newPostsTitle);
     posts.append(newPosstUl);
-    watchedState.feeds.empty = false;
   }
 
   const feedItem = document.createElement('li');
@@ -89,11 +92,12 @@ export const render = (doc, watchedState) => {
   feedItemDescr.textContent = mainDscr.innerHTML;
   feedItem.append(feedItemTitle);
   feedItem.append(feedItemDescr);
-  feedsList.append(feedItem);
+  feedsList.prepend(feedItem);
 
   postsItems.forEach((item) => {
     createNewPost(item, postsList, watchedState);
   });
 
   watchedState.form.processState = 'finished';
+  watchedState.feeds.empty = false;
 };

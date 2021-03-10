@@ -42818,11 +42818,16 @@ const schema = yup__WEBPACK_IMPORTED_MODULE_2__.object().shape({
 });
 
 const parse = (data) => {
-  if (!data.startsWith('<?xml')) {
+  // if (!data.startsWith('<?xml')) {
+
+  // }
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(data, 'text/xml');
+  console.log(doc, '1');
+  if (doc.querySelector('parsererror')) {
     throw new Error('notValidRss');
   }
-  const parser = new DOMParser();
-  return parser.parseFromString(data, 'application/xml');
+  return doc;
 };
 
 const validate = (fields) => {
@@ -42981,7 +42986,7 @@ const checkUpdates = (watchedState) => {
         axios__WEBPACK_IMPORTED_MODULE_3___default().get(buildUrl(value))
           .then((response) => {
             const doc = parse(response.data.contents);
-            console.log(doc);
+            console.log(doc, '2');
             watchedState.feeds.links.push(value);
             return doc;
           })
@@ -42991,6 +42996,7 @@ const checkUpdates = (watchedState) => {
           })
           .then(() => (0,_modal_js__WEBPACK_IMPORTED_MODULE_6__.default)(watchedState))
           .catch((err) => {
+            console.log(err);
             // prettier-ignore
             const message = err.message === 'notValidRss'
               ? i18next__WEBPACK_IMPORTED_MODULE_4__.default.t('errorMessages.rss')
@@ -43123,7 +43129,11 @@ const createNewPost = (item, postsList, watchedState) => {
 
   liEl.append(linkEl);
   liEl.append(btnEl);
-  postsList.prepend(liEl);
+  if (watchedState.feeds.empty) {
+    postsList.append(liEl);
+  } else {
+    postsList.prepend(liEl);
+  }
 };
 
 const render = (doc, watchedState) => {
@@ -43146,7 +43156,6 @@ const render = (doc, watchedState) => {
     feeds.append(newFeedsUl);
     posts.append(newPostsTitle);
     posts.append(newPosstUl);
-    watchedState.feeds.empty = false;
   }
 
   const feedItem = document.createElement('li');
@@ -43159,13 +43168,14 @@ const render = (doc, watchedState) => {
   feedItemDescr.textContent = mainDscr.innerHTML;
   feedItem.append(feedItemTitle);
   feedItem.append(feedItemDescr);
-  feedsList.append(feedItem);
+  feedsList.prepend(feedItem);
 
   postsItems.forEach((item) => {
     createNewPost(item, postsList, watchedState);
   });
 
   watchedState.form.processState = 'finished';
+  watchedState.feeds.empty = false;
 };
 
 
