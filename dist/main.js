@@ -42837,9 +42837,13 @@ const updateValidationState = (watchedState) => {
   watchedState.form.error = error;
 };
 
+/* const buildUrl = (RssUrl) => {
+  const proxy =
+}; */
+
 const checkUpdates = (watchedState) => {
   watchedState.feeds.links.forEach((link) => {
-    axios__WEBPACK_IMPORTED_MODULE_3___default().get(`https://hexlet-allorigins.herokuapp.com/raw?url=${link}`)
+    axios__WEBPACK_IMPORTED_MODULE_3___default().get(`https://hexlet-allorigins.herokuapp.com/get?url=${link}`)
       .then((response) => {
         const doc = parse(response.data);
         return doc;
@@ -42959,7 +42963,7 @@ const checkUpdates = (watchedState) => {
 
       if (lodash__WEBPACK_IMPORTED_MODULE_0___default().isEqual(watchedState.form.error, '')) {
         watchedState.form.processState = 'sending';
-        axios__WEBPACK_IMPORTED_MODULE_3___default().get(`https://hexlet-allorigins.herokuapp.com/raw?url=${value}`)
+        axios__WEBPACK_IMPORTED_MODULE_3___default().get(`https://hexlet-allorigins.herokuapp.com/get?url=${value}`)
           .then((response) => {
             const doc = parse(response.data);
             if (doc.querySelector('parsererror')) {

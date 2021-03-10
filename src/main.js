@@ -37,10 +37,14 @@ const updateValidationState = (watchedState) => {
   watchedState.form.error = error;
 };
 
+/* const buildUrl = (RssUrl) => {
+  const proxy =
+}; */
+
 const checkUpdates = (watchedState) => {
   watchedState.feeds.links.forEach((link) => {
     axios
-      .get(`https://hexlet-allorigins.herokuapp.com/raw?url=${link}`)
+      .get(`https://hexlet-allorigins.herokuapp.com/get?url=${link}`)
       .then((response) => {
         const doc = parse(response.data);
         return doc;
@@ -161,7 +165,7 @@ export default () => {
       if (_.isEqual(watchedState.form.error, '')) {
         watchedState.form.processState = 'sending';
         axios
-          .get(`https://hexlet-allorigins.herokuapp.com/raw?url=${value}`)
+          .get(`https://hexlet-allorigins.herokuapp.com/get?url=${value}`)
           .then((response) => {
             const doc = parse(response.data);
             if (doc.querySelector('parsererror')) {
