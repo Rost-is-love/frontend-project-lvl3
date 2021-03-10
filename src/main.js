@@ -181,6 +181,7 @@ export default () => {
         axios
           .get(buildUrl(value))
           .then((response) => {
+            console.log(response);
             const doc = parse(response.data.contents);
             // console.log(response, doc);
             if (doc.querySelector('parsererror')) {

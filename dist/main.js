@@ -42979,6 +42979,7 @@ const checkUpdates = (watchedState) => {
         console.log(value, watchedState.form.processState);
         axios__WEBPACK_IMPORTED_MODULE_3___default().get(buildUrl(value))
           .then((response) => {
+            console.log(response);
             const doc = parse(response.data.contents);
             // console.log(response, doc);
             if (doc.querySelector('parsererror')) {
