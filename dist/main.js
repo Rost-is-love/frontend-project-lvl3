@@ -43001,7 +43001,7 @@ const checkUpdates = (watchedState) => {
               : i18next__WEBPACK_IMPORTED_MODULE_4__.default.t('errorMessages.network');
             watchedState.form.processError = message;
             watchedState.form.processState = 'failed';
-            throw err;
+            throw new Error(err);
           });
       } else {
         watchedState.form.processState = 'failed';

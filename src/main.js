@@ -203,7 +203,7 @@ export default () => {
               : i18next.t('errorMessages.network');
             watchedState.form.processError = message;
             watchedState.form.processState = 'failed';
-            throw err;
+            throw new Error(err);
           });
       } else {
         watchedState.form.processState = 'failed';
