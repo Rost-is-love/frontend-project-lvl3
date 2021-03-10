@@ -181,7 +181,7 @@ export default () => {
       if (_.isEqual(watchedState.form.error, '')) {
         console.log(value, '1');
         axios
-          .get(buildUrl(value))
+          .get(buildUrl(value), { timeout: 5000 })
           .then((response) => {
             console.log(response, '2');
             console.log(response.data.contents);
