@@ -42978,7 +42978,7 @@ const checkUpdates = (watchedState) => {
             // console.log(response, doc);
             if (doc.querySelector('parsererror')) {
               console.log(doc, response, value, 'после ошибки');
-              throw new Error(i18next__WEBPACK_IMPORTED_MODULE_4__.default.t('errorMessages.network'));
+              // throw new Error(i18next.t('errorMessages.network'));
             } else {
               watchedState.feeds.links.push(value);
             }
