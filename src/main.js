@@ -184,7 +184,7 @@ export default () => {
             const doc = parse(response.data.contents);
             // console.log(response, doc);
             if (doc.querySelector('parsererror')) {
-              console.log(doc, response, value, 'после ошибки', watchedState.form.processState);
+              console.log('ошика парсинга 1');
               throw new Error('notValidRss');
             } else {
               watchedState.feeds.links.push(value);
@@ -197,12 +197,14 @@ export default () => {
           })
           .then(() => createModal(watchedState))
           .catch((err) => {
+            console.log(err);
             // prettier-ignore
             const message = err.message === 'notValidRss'
               ? i18next.t('errorMessages.rss')
               : i18next.t('errorMessages.network');
             watchedState.form.processError = message;
             watchedState.form.processState = 'failed';
+            console.log('ошика парсинга 2');
             throw new Error(err);
           });
       } else {

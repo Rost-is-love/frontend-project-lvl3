@@ -42982,7 +42982,7 @@ const checkUpdates = (watchedState) => {
             const doc = parse(response.data.contents);
             // console.log(response, doc);
             if (doc.querySelector('parsererror')) {
-              console.log(doc, response, value, 'после ошибки', watchedState.form.processState);
+              console.log('ошика парсинга 1');
               throw new Error('notValidRss');
             } else {
               watchedState.feeds.links.push(value);
@@ -42995,12 +42995,14 @@ const checkUpdates = (watchedState) => {
           })
           .then(() => (0,_modal_js__WEBPACK_IMPORTED_MODULE_6__.default)(watchedState))
           .catch((err) => {
+            console.log(err);
             // prettier-ignore
             const message = err.message === 'notValidRss'
               ? i18next__WEBPACK_IMPORTED_MODULE_4__.default.t('errorMessages.rss')
               : i18next__WEBPACK_IMPORTED_MODULE_4__.default.t('errorMessages.network');
             watchedState.form.processError = message;
             watchedState.form.processState = 'failed';
+            console.log('ошика парсинга 2');
             throw new Error(err);
           });
       } else {
