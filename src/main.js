@@ -18,6 +18,7 @@ const schema = yup.object().shape({
 });
 
 const parse = (data) => {
+  console.log(data);
   const parser = new DOMParser();
   return parser.parseFromString(data, 'application/xml');
 };
@@ -171,6 +172,7 @@ export default () => {
 
       if (_.isEqual(watchedState.form.error, '')) {
         watchedState.form.processState = 'sending';
+        console.log(value);
         axios
           .get(buildUrl(value))
           .then((response) => {

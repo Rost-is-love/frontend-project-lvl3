@@ -42818,6 +42818,7 @@ const schema = yup__WEBPACK_IMPORTED_MODULE_2__.object().shape({
 });
 
 const parse = (data) => {
+  console.log(data);
   const parser = new DOMParser();
   return parser.parseFromString(data, 'application/xml');
 };
@@ -42970,6 +42971,7 @@ const checkUpdates = (watchedState) => {
 
       if (lodash__WEBPACK_IMPORTED_MODULE_0___default().isEqual(watchedState.form.error, '')) {
         watchedState.form.processState = 'sending';
+        console.log(value);
         axios__WEBPACK_IMPORTED_MODULE_3___default().get(buildUrl(value))
           .then((response) => {
             const doc = parse(response.data.contents);
