@@ -32,6 +32,7 @@ export const createNewPost = (item, postsList, watchedState) => {
   const title = item.querySelector('title').innerHTML;
   const itemLink = item.querySelector('link').innerHTML;
   const descr = item.querySelector('description').innerHTML;
+  console.log(id, descr);
 
   watchedState.posts.links.push(itemLink);
   watchedState.posts.dscrs[id] = descr;

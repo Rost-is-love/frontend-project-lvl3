@@ -183,6 +183,7 @@ export default () => {
           .get(buildUrl(value))
           .then((response) => {
             const doc = parse(response.data.contents);
+            console.log(doc);
             watchedState.feeds.links.push(value);
             return doc;
           })
