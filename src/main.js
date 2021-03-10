@@ -18,9 +18,6 @@ const schema = yup.object().shape({
 });
 
 const parse = (data) => {
-  // if (!data.startsWith('<?xml')) {
-
-  // }
   const parser = new DOMParser();
   const doc = parser.parseFromString(data, 'text/xml');
   if (doc.querySelector('parsererror')) {
