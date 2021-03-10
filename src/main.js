@@ -18,9 +18,7 @@ const schema = yup.object().shape({
 });
 
 const parse = (data) => {
-  if (!data.startsWith('<?xml')) {
-    throw new Error('notValidRss');
-  }
+  console.log(data);
   const parser = new DOMParser();
   return parser.parseFromString(data, 'application/xml');
 };
@@ -181,18 +179,17 @@ export default () => {
       if (_.isEqual(watchedState.form.error, '')) {
         console.log(value, '1');
         axios
-          .get(buildUrl(value), { timeout: 5000 })
+          .get(buildUrl(value))
           .then((response) => {
             console.log(response, '2');
-            console.log(response.data.contents);
             const doc = parse(response.data.contents);
             // console.log(response, doc);
-            /* if (doc.querySelector('parsererror')) {
+            if (doc.querySelector('parsererror')) {
               console.log('ошика парсинга 1');
               throw new Error('notValidRss');
-            } else { */
-            watchedState.feeds.links.push(value);
-            // }
+            } else {
+              watchedState.feeds.links.push(value);
+            }
             return doc;
           })
           .then((doc) => {

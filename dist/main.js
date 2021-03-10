@@ -42818,9 +42818,7 @@ const schema = yup__WEBPACK_IMPORTED_MODULE_2__.object().shape({
 });
 
 const parse = (data) => {
-  if (!data.startsWith('<?xml')) {
-    throw new Error('notValidRss');
-  }
+  console.log(data);
   const parser = new DOMParser();
   return parser.parseFromString(data, 'application/xml');
 };
@@ -42979,18 +42977,17 @@ const checkUpdates = (watchedState) => {
 
       if (lodash__WEBPACK_IMPORTED_MODULE_0___default().isEqual(watchedState.form.error, '')) {
         console.log(value, '1');
-        axios__WEBPACK_IMPORTED_MODULE_3___default().get(buildUrl(value), { timeout: 5000 })
+        axios__WEBPACK_IMPORTED_MODULE_3___default().get(buildUrl(value))
           .then((response) => {
             console.log(response, '2');
-            console.log(response.data.contents);
             const doc = parse(response.data.contents);
             // console.log(response, doc);
-            /* if (doc.querySelector('parsererror')) {
+            if (doc.querySelector('parsererror')) {
               console.log('ошика парсинга 1');
               throw new Error('notValidRss');
-            } else { */
-            watchedState.feeds.links.push(value);
-            // }
+            } else {
+              watchedState.feeds.links.push(value);
+            }
             return doc;
           })
           .then((doc) => {
