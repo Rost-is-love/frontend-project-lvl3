@@ -42975,6 +42975,7 @@ const checkUpdates = (watchedState) => {
         axios__WEBPACK_IMPORTED_MODULE_3___default().get(buildUrl(value))
           .then((response) => {
             const doc = parse(response.data.contents);
+            console.log(response, doc);
             if (doc.querySelector('parsererror')) {
               throw new Error(i18next__WEBPACK_IMPORTED_MODULE_4__.default.t('errorMessages.network'));
             } else {
