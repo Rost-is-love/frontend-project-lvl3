@@ -176,14 +176,14 @@ export default () => {
 
       if (_.isEqual(watchedState.form.error, '')) {
         watchedState.form.processState = 'sending';
-        console.log(value);
+        console.log(value, watchedState.form.processState);
         axios
           .get(buildUrl(value))
           .then((response) => {
             const doc = parse(response.data.contents);
             // console.log(response, doc);
             if (doc.querySelector('parsererror')) {
-              console.log(doc, response, value, 'после ошибки');
+              console.log(doc, response, value, 'после ошибки', watchedState.form.processState);
               throw new Error(i18next.t('errorMessages.network'));
             } else {
               watchedState.feeds.links.push(value);

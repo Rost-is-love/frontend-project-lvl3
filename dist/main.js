@@ -42975,13 +42975,13 @@ const checkUpdates = (watchedState) => {
 
       if (lodash__WEBPACK_IMPORTED_MODULE_0___default().isEqual(watchedState.form.error, '')) {
         watchedState.form.processState = 'sending';
-        console.log(value);
+        console.log(value, watchedState.form.processState);
         axios__WEBPACK_IMPORTED_MODULE_3___default().get(buildUrl(value))
           .then((response) => {
             const doc = parse(response.data.contents);
             // console.log(response, doc);
             if (doc.querySelector('parsererror')) {
-              console.log(doc, response, value, 'после ошибки');
+              console.log(doc, response, value, 'после ошибки', watchedState.form.processState);
               throw new Error(i18next__WEBPACK_IMPORTED_MODULE_4__.default.t('errorMessages.network'));
             } else {
               watchedState.feeds.links.push(value);
