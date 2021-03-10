@@ -42819,6 +42819,9 @@ const schema = yup__WEBPACK_IMPORTED_MODULE_2__.object().shape({
 
 const parse = (data) => {
   console.log(data);
+  if (!data.startsWith('<?xml')) {
+    throw new Error('notValidRss');
+  }
   const parser = new DOMParser();
   return parser.parseFromString(data, 'application/xml');
 };
@@ -42982,12 +42985,12 @@ const checkUpdates = (watchedState) => {
             console.log(response, '2');
             const doc = parse(response.data.contents);
             // console.log(response, doc);
-            if (doc.querySelector('parsererror')) {
-              console.log('ошика парсинга 1');
-              throw new Error('notValidRss');
-            } else {
-              watchedState.feeds.links.push(value);
-            }
+            // if (doc.querySelector('parsererror')) {
+            //   // console.log('ошика парсинга 1');
+            //   throw new Error('notValidRss');
+            // } else {
+            watchedState.feeds.links.push(value);
+            // }
             return doc;
           })
           .then((doc) => {
@@ -43003,8 +43006,6 @@ const checkUpdates = (watchedState) => {
               : i18next__WEBPACK_IMPORTED_MODULE_4__.default.t('errorMessages.network');
             watchedState.form.processError = message;
             watchedState.form.processState = 'failed';
-            console.log('ошика парсинга 2');
-            throw new Error(err);
           });
       } else {
         watchedState.form.processState = 'failed';
