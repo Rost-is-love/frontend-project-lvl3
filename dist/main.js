@@ -43025,10 +43025,12 @@ __webpack_require__.r(__webpack_exports__);
     btn.addEventListener('click', (e) => {
       e.preventDefault();
       const id = btn.getAttribute('data-id');
+      console.log(btn, id);
       const titleEl = btn.previousSibling;
       const titleText = titleEl.innerHTML;
       const titleLink = titleEl.getAttribute('href');
       const descr = watchedState.posts.dscrs[id];
+      console.log(descr);
       const modal = document.querySelector('.modal');
       const modalTitle = document.querySelector('.modal-title');
       const modalBody = document.querySelector('.modal-body');
@@ -43100,7 +43102,7 @@ const createNewPost = (item, postsList, watchedState) => {
   const title = item.querySelector('title').innerHTML;
   const itemLink = item.querySelector('link').innerHTML;
   const descr = item.querySelector('description').innerHTML;
-  console.log(id, descr);
+  console.log(id, title, descr);
 
   watchedState.posts.links.push(itemLink);
   watchedState.posts.dscrs[id] = descr;

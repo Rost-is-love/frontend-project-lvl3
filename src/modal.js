@@ -4,10 +4,12 @@ export default (watchedState) => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
       const id = btn.getAttribute('data-id');
+      console.log(btn, id);
       const titleEl = btn.previousSibling;
       const titleText = titleEl.innerHTML;
       const titleLink = titleEl.getAttribute('href');
       const descr = watchedState.posts.dscrs[id];
+      console.log(descr);
       const modal = document.querySelector('.modal');
       const modalTitle = document.querySelector('.modal-title');
       const modalBody = document.querySelector('.modal-body');
