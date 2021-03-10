@@ -42964,10 +42964,11 @@ const checkUpdates = (watchedState) => {
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-
+    watchedState.form.processState = 'sending';
     const { value } = input;
 
     if (watchedState.feeds.links.indexOf(value) !== -1) {
+      watchedState.form.processState = 'failed';
       watchedState.form.processError = i18next__WEBPACK_IMPORTED_MODULE_4__.default.t('errorMessages.feeds');
     } else {
       watchedState.form.fields.url = value;
@@ -42975,7 +42976,6 @@ const checkUpdates = (watchedState) => {
 
       if (lodash__WEBPACK_IMPORTED_MODULE_0___default().isEqual(watchedState.form.error, '')) {
         console.log(value, watchedState.form.processState);
-        watchedState.form.processState = 'sending';
         axios__WEBPACK_IMPORTED_MODULE_3___default().get(buildUrl(value))
           .then((response) => {
             const doc = parse(response.data.contents);
@@ -42998,6 +42998,8 @@ const checkUpdates = (watchedState) => {
             watchedState.form.processState = 'failed';
             throw err;
           });
+      } else {
+        watchedState.form.processState = 'failed';
       }
     }
   });

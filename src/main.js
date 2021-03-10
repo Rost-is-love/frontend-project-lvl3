@@ -165,10 +165,11 @@ export default () => {
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-
+    watchedState.form.processState = 'sending';
     const { value } = input;
 
     if (watchedState.feeds.links.indexOf(value) !== -1) {
+      watchedState.form.processState = 'failed';
       watchedState.form.processError = i18next.t('errorMessages.feeds');
     } else {
       watchedState.form.fields.url = value;
@@ -176,7 +177,6 @@ export default () => {
 
       if (_.isEqual(watchedState.form.error, '')) {
         console.log(value, watchedState.form.processState);
-        watchedState.form.processState = 'sending';
         axios
           .get(buildUrl(value))
           .then((response) => {
@@ -200,6 +200,8 @@ export default () => {
             watchedState.form.processState = 'failed';
             throw err;
           });
+      } else {
+        watchedState.form.processState = 'failed';
       }
     }
   });
