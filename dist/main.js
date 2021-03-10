@@ -42922,7 +42922,7 @@ const checkUpdates = (watchedState) => {
 
   const form = document.querySelector('.rss-form');
   const input = document.querySelector('[aria-label="url"]');
-  const submitButton = document.querySelector('.btn');
+  const submitButton = document.querySelector('[aria-label="add"]');
 
   const processStateHandler = (processState) => {
     switch (processState) {
@@ -42978,10 +42978,13 @@ const checkUpdates = (watchedState) => {
             // console.log(response, doc);
             if (doc.querySelector('parsererror')) {
               console.log(doc, response, value, 'после ошибки');
-              // throw new Error(i18next.t('errorMessages.network'));
+              throw new Error(i18next__WEBPACK_IMPORTED_MODULE_4__.default.t('errorMessages.network'));
             } else {
               watchedState.feeds.links.push(value);
             }
+            return doc;
+          })
+          .then((doc) => {
             (0,_render_js__WEBPACK_IMPORTED_MODULE_5__.render)(doc, watchedState);
             setTimeout(() => checkUpdates(watchedState), 5000);
           })

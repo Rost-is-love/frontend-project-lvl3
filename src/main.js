@@ -123,7 +123,7 @@ export default () => {
 
   const form = document.querySelector('.rss-form');
   const input = document.querySelector('[aria-label="url"]');
-  const submitButton = document.querySelector('.btn');
+  const submitButton = document.querySelector('[aria-label="add"]');
 
   const processStateHandler = (processState) => {
     switch (processState) {
@@ -180,10 +180,13 @@ export default () => {
             // console.log(response, doc);
             if (doc.querySelector('parsererror')) {
               console.log(doc, response, value, 'после ошибки');
-              // throw new Error(i18next.t('errorMessages.network'));
+              throw new Error(i18next.t('errorMessages.network'));
             } else {
               watchedState.feeds.links.push(value);
             }
+            return doc;
+          })
+          .then((doc) => {
             render(doc, watchedState);
             setTimeout(() => checkUpdates(watchedState), 5000);
           })
