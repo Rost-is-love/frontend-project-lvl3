@@ -177,11 +177,11 @@ export default () => {
       updateValidationState(watchedState);
 
       if (_.isEqual(watchedState.form.error, '')) {
-        console.log(value, watchedState.form.processState);
+        console.log(value, '1');
         axios
           .get(buildUrl(value))
           .then((response) => {
-            console.log(response);
+            console.log(response, '2');
             const doc = parse(response.data.contents);
             // console.log(response, doc);
             if (doc.querySelector('parsererror')) {
