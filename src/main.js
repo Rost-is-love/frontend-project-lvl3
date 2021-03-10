@@ -18,7 +18,6 @@ const schema = yup.object().shape({
 });
 
 const parse = (data) => {
-  console.log(data);
   if (!data.startsWith('<?xml')) {
     throw new Error('notValidRss');
   }
@@ -180,19 +179,11 @@ export default () => {
       updateValidationState(watchedState);
 
       if (_.isEqual(watchedState.form.error, '')) {
-        console.log(value, '1');
         axios
           .get(buildUrl(value))
           .then((response) => {
-            console.log(response, '2');
             const doc = parse(response.data.contents);
-            // console.log(response, doc);
-            // if (doc.querySelector('parsererror')) {
-            //   // console.log('ошика парсинга 1');
-            //   throw new Error('notValidRss');
-            // } else {
             watchedState.feeds.links.push(value);
-            // }
             return doc;
           })
           .then((doc) => {
@@ -201,7 +192,6 @@ export default () => {
           })
           .then(() => createModal(watchedState))
           .catch((err) => {
-            console.log(err);
             // prettier-ignore
             const message = err.message === 'notValidRss'
               ? i18next.t('errorMessages.rss')

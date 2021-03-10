@@ -42818,7 +42818,6 @@ const schema = yup__WEBPACK_IMPORTED_MODULE_2__.object().shape({
 });
 
 const parse = (data) => {
-  console.log(data);
   if (!data.startsWith('<?xml')) {
     throw new Error('notValidRss');
   }
@@ -42979,18 +42978,10 @@ const checkUpdates = (watchedState) => {
       updateValidationState(watchedState);
 
       if (lodash__WEBPACK_IMPORTED_MODULE_0___default().isEqual(watchedState.form.error, '')) {
-        console.log(value, '1');
         axios__WEBPACK_IMPORTED_MODULE_3___default().get(buildUrl(value))
           .then((response) => {
-            console.log(response, '2');
             const doc = parse(response.data.contents);
-            // console.log(response, doc);
-            // if (doc.querySelector('parsererror')) {
-            //   // console.log('ошика парсинга 1');
-            //   throw new Error('notValidRss');
-            // } else {
             watchedState.feeds.links.push(value);
-            // }
             return doc;
           })
           .then((doc) => {
@@ -42999,7 +42990,6 @@ const checkUpdates = (watchedState) => {
           })
           .then(() => (0,_modal_js__WEBPACK_IMPORTED_MODULE_6__.default)(watchedState))
           .catch((err) => {
-            console.log(err);
             // prettier-ignore
             const message = err.message === 'notValidRss'
               ? i18next__WEBPACK_IMPORTED_MODULE_4__.default.t('errorMessages.rss')
