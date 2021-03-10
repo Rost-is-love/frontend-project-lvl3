@@ -129,15 +129,19 @@ export default () => {
     switch (processState) {
       case 'failed':
         submitButton.disabled = false;
+        input.readOnly = false;
         break;
       case 'filling':
         submitButton.disabled = false;
+        input.readOnly = false;
         break;
       case 'sending':
         submitButton.disabled = true;
+        input.readOnly = true;
         break;
       case 'finished':
         submitButton.disabled = false;
+        input.readOnly = false;
         renderSuccess(input, i18next.t('successMessages.feeds'));
         break;
       default:

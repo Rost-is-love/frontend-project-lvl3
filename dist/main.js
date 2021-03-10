@@ -42928,15 +42928,19 @@ const checkUpdates = (watchedState) => {
     switch (processState) {
       case 'failed':
         submitButton.disabled = false;
+        input.readOnly = false;
         break;
       case 'filling':
         submitButton.disabled = false;
+        input.readOnly = false;
         break;
       case 'sending':
         submitButton.disabled = true;
+        input.readOnly = true;
         break;
       case 'finished':
         submitButton.disabled = false;
+        input.readOnly = false;
         (0,_render_js__WEBPACK_IMPORTED_MODULE_5__.renderSuccess)(input, i18next__WEBPACK_IMPORTED_MODULE_4__.default.t('successMessages.feeds'));
         break;
       default:
