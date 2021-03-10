@@ -177,8 +177,9 @@ export default () => {
           .get(buildUrl(value))
           .then((response) => {
             const doc = parse(response.data.contents);
-            console.log(response, doc);
+            // console.log(response, doc);
             if (doc.querySelector('parsererror')) {
+              console.log(doc, response, value, 'после ошибки');
               throw new Error(i18next.t('errorMessages.network'));
             } else {
               watchedState.feeds.links.push(value);
