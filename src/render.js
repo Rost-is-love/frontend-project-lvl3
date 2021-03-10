@@ -89,7 +89,7 @@ export const render = (doc, watchedState) => {
   feedItemDescr.textContent = mainDscr.innerHTML;
   feedItem.append(feedItemTitle);
   feedItem.append(feedItemDescr);
-  feedsList.prepend(feedItem);
+  feedsList.append(feedItem);
 
   postsItems.forEach((item) => {
     createNewPost(item, postsList, watchedState);

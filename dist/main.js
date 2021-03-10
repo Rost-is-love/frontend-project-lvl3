@@ -43031,7 +43031,7 @@ __webpack_require__.r(__webpack_exports__);
       const titleLink = titleEl.getAttribute('href');
       const descr = watchedState.posts.dscrs[id];
       console.log(descr);
-      const modal = document.querySelector('.modal');
+      // const modal = document.querySelector('.modal');
       const modalTitle = document.querySelector('.modal-title');
       const modalBody = document.querySelector('.modal-body');
       const modalLink = document.querySelector('div.modal-footer > a');
@@ -43039,7 +43039,7 @@ __webpack_require__.r(__webpack_exports__);
       modalTitle.textContent = titleText;
       modalBody.textContent = descr;
       modalLink.setAttribute('href', titleLink);
-      modal.classList.add('show');
+      // modal.classList.add('show');
 
       if (watchedState.posts.read.indexOf(id) === -1) {
         titleEl.classList.remove('font-weight-bold');
@@ -43159,7 +43159,7 @@ const render = (doc, watchedState) => {
   feedItemDescr.textContent = mainDscr.innerHTML;
   feedItem.append(feedItemTitle);
   feedItem.append(feedItemDescr);
-  feedsList.prepend(feedItem);
+  feedsList.append(feedItem);
 
   postsItems.forEach((item) => {
     createNewPost(item, postsList, watchedState);

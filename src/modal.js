@@ -10,7 +10,7 @@ export default (watchedState) => {
       const titleLink = titleEl.getAttribute('href');
       const descr = watchedState.posts.dscrs[id];
       console.log(descr);
-      const modal = document.querySelector('.modal');
+      // const modal = document.querySelector('.modal');
       const modalTitle = document.querySelector('.modal-title');
       const modalBody = document.querySelector('.modal-body');
       const modalLink = document.querySelector('div.modal-footer > a');
@@ -18,7 +18,7 @@ export default (watchedState) => {
       modalTitle.textContent = titleText;
       modalBody.textContent = descr;
       modalLink.setAttribute('href', titleLink);
-      modal.classList.add('show');
+      // modal.classList.add('show');
 
       if (watchedState.posts.read.indexOf(id) === -1) {
         titleEl.classList.remove('font-weight-bold');
