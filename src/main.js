@@ -175,8 +175,8 @@ export default () => {
       updateValidationState(watchedState);
 
       if (_.isEqual(watchedState.form.error, '')) {
-        watchedState.form.processState = 'sending';
         console.log(value, watchedState.form.processState);
+        watchedState.form.processState = 'sending';
         axios
           .get(buildUrl(value))
           .then((response) => {

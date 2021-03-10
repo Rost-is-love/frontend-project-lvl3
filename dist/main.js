@@ -42974,8 +42974,8 @@ const checkUpdates = (watchedState) => {
       updateValidationState(watchedState);
 
       if (lodash__WEBPACK_IMPORTED_MODULE_0___default().isEqual(watchedState.form.error, '')) {
-        watchedState.form.processState = 'sending';
         console.log(value, watchedState.form.processState);
+        watchedState.form.processState = 'sending';
         axios__WEBPACK_IMPORTED_MODULE_3___default().get(buildUrl(value))
           .then((response) => {
             const doc = parse(response.data.contents);
