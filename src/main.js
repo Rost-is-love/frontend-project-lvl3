@@ -81,7 +81,8 @@ export default () => {
       ru: {
         translation: {
           errorMessages: {
-            network: 'Ресурс не содержит валидный RSS',
+            rss: 'Ресурс не содержит валидный RSS',
+            network: 'Ошибка сети',
             url: 'Ссылка должна быть валидным URL',
             feeds: 'RSS уже существует',
           },
@@ -184,7 +185,7 @@ export default () => {
             // console.log(response, doc);
             if (doc.querySelector('parsererror')) {
               console.log(doc, response, value, 'после ошибки', watchedState.form.processState);
-              throw new Error(i18next.t('errorMessages.network'));
+              throw new Error('notValidRss');
             } else {
               watchedState.feeds.links.push(value);
             }
@@ -196,7 +197,11 @@ export default () => {
           })
           .then(() => createModal(watchedState))
           .catch((err) => {
-            watchedState.form.processError = i18next.t('errorMessages.network');
+            // prettier-ignore
+            const message = err.message === 'notValidRss'
+              ? i18next.t('errorMessages.rss')
+              : i18next.t('errorMessages.network');
+            watchedState.form.processError = message;
             watchedState.form.processState = 'failed';
             throw err;
           });

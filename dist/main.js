@@ -42880,7 +42880,8 @@ const checkUpdates = (watchedState) => {
       ru: {
         translation: {
           errorMessages: {
-            network: 'Ресурс не содержит валидный RSS',
+            rss: 'Ресурс не содержит валидный RSS',
+            network: 'Ошибка сети',
             url: 'Ссылка должна быть валидным URL',
             feeds: 'RSS уже существует',
           },
@@ -42982,7 +42983,7 @@ const checkUpdates = (watchedState) => {
             // console.log(response, doc);
             if (doc.querySelector('parsererror')) {
               console.log(doc, response, value, 'после ошибки', watchedState.form.processState);
-              throw new Error(i18next__WEBPACK_IMPORTED_MODULE_4__.default.t('errorMessages.network'));
+              throw new Error('notValidRss');
             } else {
               watchedState.feeds.links.push(value);
             }
@@ -42994,7 +42995,11 @@ const checkUpdates = (watchedState) => {
           })
           .then(() => (0,_modal_js__WEBPACK_IMPORTED_MODULE_6__.default)(watchedState))
           .catch((err) => {
-            watchedState.form.processError = i18next__WEBPACK_IMPORTED_MODULE_4__.default.t('errorMessages.network');
+            // prettier-ignore
+            const message = err.message === 'notValidRss'
+              ? i18next__WEBPACK_IMPORTED_MODULE_4__.default.t('errorMessages.rss')
+              : i18next__WEBPACK_IMPORTED_MODULE_4__.default.t('errorMessages.network');
+            watchedState.form.processError = message;
             watchedState.form.processState = 'failed';
             throw err;
           });
