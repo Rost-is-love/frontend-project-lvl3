@@ -19,7 +19,7 @@ const schema = yup.object().shape({
 
 const parse = (data) => {
   const parser = new DOMParser();
-  return parser.parseFromString(data, 'text/xml');
+  return parser.parseFromString(data, 'application/xml');
 };
 
 const validate = (fields) => {
@@ -37,16 +37,23 @@ const updateValidationState = (watchedState) => {
   watchedState.form.error = error;
 };
 
-/* const buildUrl = (RssUrl) => {
-  const proxy =
-}; */
+const buildUrl = (rssUrl) => {
+  const proxy = 'https://hexlet-allorigins.herokuapp.com';
+  const proxyApi = '/get';
+  const url = new URL(`${proxy}${proxyApi}`);
+  const params = url.searchParams;
+  params.set('disableCache', true);
+  params.set('url', rssUrl);
+
+  return url.toString();
+};
 
 const checkUpdates = (watchedState) => {
   watchedState.feeds.links.forEach((link) => {
     axios
-      .get(`https://hexlet-allorigins.herokuapp.com/get?url=${link}`)
+      .get(buildUrl(link))
       .then((response) => {
-        const doc = parse(response.data);
+        const doc = parse(response.data.contents);
         return doc;
       })
       .then((doc) => {
@@ -165,9 +172,9 @@ export default () => {
       if (_.isEqual(watchedState.form.error, '')) {
         watchedState.form.processState = 'sending';
         axios
-          .get(`https://hexlet-allorigins.herokuapp.com/get?url=${value}`)
+          .get(buildUrl(value))
           .then((response) => {
-            const doc = parse(response.data);
+            const doc = parse(response.data.contents);
             if (doc.querySelector('parsererror')) {
               throw new Error(i18next.t('errorMessages.network'));
             } else {

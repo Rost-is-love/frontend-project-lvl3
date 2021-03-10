@@ -42819,7 +42819,7 @@ const schema = yup__WEBPACK_IMPORTED_MODULE_2__.object().shape({
 
 const parse = (data) => {
   const parser = new DOMParser();
-  return parser.parseFromString(data, 'text/xml');
+  return parser.parseFromString(data, 'application/xml');
 };
 
 const validate = (fields) => {
@@ -42837,15 +42837,22 @@ const updateValidationState = (watchedState) => {
   watchedState.form.error = error;
 };
 
-/* const buildUrl = (RssUrl) => {
-  const proxy =
-}; */
+const buildUrl = (rssUrl) => {
+  const proxy = 'https://hexlet-allorigins.herokuapp.com';
+  const proxyApi = '/get';
+  const url = new URL(`${proxy}${proxyApi}`);
+  const params = url.searchParams;
+  params.set('disableCache', true);
+  params.set('url', rssUrl);
+
+  return url.toString();
+};
 
 const checkUpdates = (watchedState) => {
   watchedState.feeds.links.forEach((link) => {
-    axios__WEBPACK_IMPORTED_MODULE_3___default().get(`https://hexlet-allorigins.herokuapp.com/get?url=${link}`)
+    axios__WEBPACK_IMPORTED_MODULE_3___default().get(buildUrl(link))
       .then((response) => {
-        const doc = parse(response.data);
+        const doc = parse(response.data.contents);
         return doc;
       })
       .then((doc) => {
@@ -42963,9 +42970,9 @@ const checkUpdates = (watchedState) => {
 
       if (lodash__WEBPACK_IMPORTED_MODULE_0___default().isEqual(watchedState.form.error, '')) {
         watchedState.form.processState = 'sending';
-        axios__WEBPACK_IMPORTED_MODULE_3___default().get(`https://hexlet-allorigins.herokuapp.com/get?url=${value}`)
+        axios__WEBPACK_IMPORTED_MODULE_3___default().get(buildUrl(value))
           .then((response) => {
-            const doc = parse(response.data);
+            const doc = parse(response.data.contents);
             if (doc.querySelector('parsererror')) {
               throw new Error(i18next__WEBPACK_IMPORTED_MODULE_4__.default.t('errorMessages.network'));
             } else {
