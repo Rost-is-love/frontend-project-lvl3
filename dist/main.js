@@ -42982,9 +42982,6 @@ const checkUpdates = (watchedState) => {
             } else {
               watchedState.feeds.links.push(value);
             }
-            return doc;
-          })
-          .then((doc) => {
             (0,_render_js__WEBPACK_IMPORTED_MODULE_5__.render)(doc, watchedState);
             setTimeout(() => checkUpdates(watchedState), 5000);
           })

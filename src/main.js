@@ -184,9 +184,6 @@ export default () => {
             } else {
               watchedState.feeds.links.push(value);
             }
-            return doc;
-          })
-          .then((doc) => {
             render(doc, watchedState);
             setTimeout(() => checkUpdates(watchedState), 5000);
           })
