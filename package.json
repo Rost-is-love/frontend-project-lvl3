@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Rss Reader - service for aggregating RSS feeds",
   "main": "./src/main.js",
+  "engines": {
+    "node": "14.14.0"
+  },
   "private": true,
   "dependencies": {
     "@babel/runtime": "^7.13.9",
@@ -42,9 +45,9 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "cross-env NODE_ENV=production webpack --mode production",
-    "dev": "cross-env NODE_ENV=development webpack --mode development",
-    "start": "cross-env NODE_ENV=development webpack serve --mode development"
+    "build": "cross-env NODE_ENV=production webpack",
+    "dev": "cross-env NODE_ENV=development webpack",
+    "start": "cross-env NODE_ENV=development webpack serve"
   },
   "repository": {
     "type": "git",
