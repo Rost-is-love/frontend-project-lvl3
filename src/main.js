@@ -4,6 +4,7 @@ import onChange from 'on-change';
 import * as yup from 'yup';
 import axios from 'axios';
 import i18next from 'i18next';
+import resources from './locales/ru.js';
 // prettier-ignore
 import {
   render,
@@ -80,28 +81,7 @@ export default () => {
   i18next.init({
     lng: 'ru',
     debug: false,
-    resources: {
-      ru: {
-        translation: {
-          errorMessages: {
-            rss: 'Ресурс не содержит валидный RSS',
-            network: 'Ошибка сети',
-            url: 'Ссылка должна быть валидным URL',
-            feeds: 'RSS уже существует',
-          },
-          successMessages: {
-            feeds: 'RSS успешно загружен',
-          },
-          buttons: {
-            post: 'Просмотр',
-          },
-          titles: {
-            feeds: 'Фиды',
-            posts: 'Посты',
-          },
-        },
-      },
-    },
+    resources,
   });
 
   const state = {
