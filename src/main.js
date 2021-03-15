@@ -150,7 +150,6 @@ export default () => {
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-    watchedState.form.processState = 'sending';
     const formData = new FormData(e.target);
     const value = formData.get('url');
 
@@ -162,6 +161,7 @@ export default () => {
       updateValidationState(watchedState);
 
       if (_.isEqual(watchedState.form.error, '')) {
+        watchedState.form.processState = 'sending';
         axios
           .get(buildUrl(value))
           .then((response) => {
