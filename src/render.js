@@ -59,7 +59,6 @@ export const createNewPost = (item, postsList, watchedState) => {
 };
 
 export const render = (doc, watchedState) => {
-  console.log(watchedState.feeds.links.length);
   const mainTitle = doc.querySelector('title');
   const mainDscr = doc.querySelector('description');
   const feeds = document.querySelector('.feeds');
