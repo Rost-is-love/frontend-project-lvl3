@@ -95,6 +95,4 @@ export const render = (doc, watchedState) => {
   postsItems.forEach((item) => {
     createNewPost(item, postsList, watchedState);
   });
-
-  watchedState.form.processState = 'finished';
 };

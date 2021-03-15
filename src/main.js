@@ -1,15 +1,13 @@
 /* eslint-disable no-param-reassign */
 import _ from 'lodash';
-import onChange from 'on-change';
 import * as yup from 'yup';
 import axios from 'axios';
 import i18next from 'i18next';
 import resources from './locales/ru.js';
+import buildWatchedState from './view.js';
 // prettier-ignore
 import {
   render,
-  renderError,
-  renderSuccess,
   createNewPost,
 } from './render.js';
 import createModal from './modal.js';
@@ -106,46 +104,7 @@ export default () => {
   };
 
   const form = document.querySelector('.rss-form');
-  const input = document.querySelector('[aria-label="url"]');
-  const submitButton = document.querySelector('[aria-label="add"]');
-
-  const processStateHandler = (processState) => {
-    switch (processState) {
-      case 'failed':
-        submitButton.disabled = false;
-        input.readOnly = false;
-        break;
-      case 'filling':
-        submitButton.disabled = false;
-        input.readOnly = false;
-        break;
-      case 'sending':
-        submitButton.disabled = true;
-        input.readOnly = true;
-        break;
-      case 'finished':
-        submitButton.disabled = false;
-        input.readOnly = false;
-        renderSuccess(input, i18next.t('successMessages.feeds'));
-        break;
-      default:
-        throw new Error(`Unknown state: ${processState}`);
-    }
-  };
-
-  const watchedState = onChange(state, (path, value) => {
-    switch (path) {
-      case 'form.processState':
-        processStateHandler(value);
-        break;
-      case 'form.error':
-      case 'form.processError':
-        renderError(input, value);
-        break;
-      default:
-        break;
-    }
-  });
+  const watchedState = buildWatchedState(state);
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -174,7 +133,10 @@ export default () => {
               setTimeout(() => checkUpdates(watchedState), 5000);
             }
           })
-          .then(() => createModal(watchedState))
+          .then(() => {
+            createModal(watchedState);
+            watchedState.form.processState = 'finished';
+          })
           .catch((err) => {
             // prettier-ignore
             const message = err.message === 'notValidRss'
