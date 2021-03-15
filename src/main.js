@@ -151,7 +151,8 @@ export default () => {
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     watchedState.form.processState = 'sending';
-    const { value } = input;
+    const formData = new FormData(e.target);
+    const value = formData.get('url');
 
     if (watchedState.feeds.links.indexOf(value) !== -1) {
       watchedState.form.processState = 'failed';
