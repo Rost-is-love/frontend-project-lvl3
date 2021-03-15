@@ -170,7 +170,9 @@ export default () => {
           })
           .then((doc) => {
             render(doc, watchedState);
-            setTimeout(() => checkUpdates(watchedState), 5000);
+            if (watchedState.feeds.links.length === 1) {
+              setTimeout(() => checkUpdates(watchedState), 5000);
+            }
           })
           .then(() => createModal(watchedState))
           .catch((err) => {
