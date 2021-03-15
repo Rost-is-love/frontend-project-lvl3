@@ -51,7 +51,7 @@ export const createNewPost = (item, postsList, watchedState) => {
 
   liEl.append(linkEl);
   liEl.append(btnEl);
-  if (watchedState.feeds.empty) {
+  if (watchedState.feeds.links.length === 1) {
     postsList.append(liEl);
   } else {
     postsList.prepend(liEl);
@@ -59,13 +59,14 @@ export const createNewPost = (item, postsList, watchedState) => {
 };
 
 export const render = (doc, watchedState) => {
+  console.log(watchedState.feeds.links.length);
   const mainTitle = doc.querySelector('title');
   const mainDscr = doc.querySelector('description');
   const feeds = document.querySelector('.feeds');
   const posts = document.querySelector('.posts');
   const postsItems = doc.querySelectorAll('item');
 
-  if (watchedState.feeds.empty) {
+  if (watchedState.feeds.links.length === 1) {
     const newFeedsTitle = document.createElement('h2');
     const newPostsTitle = document.createElement('h2');
     const newFeedsUl = document.createElement('ul');
@@ -97,5 +98,4 @@ export const render = (doc, watchedState) => {
   });
 
   watchedState.form.processState = 'finished';
-  watchedState.feeds.empty = false;
 };

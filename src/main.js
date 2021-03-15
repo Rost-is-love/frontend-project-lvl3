@@ -96,7 +96,6 @@ export default () => {
     },
     feeds: {
       links: [],
-      empty: true,
     },
     posts: {
       links: [],
