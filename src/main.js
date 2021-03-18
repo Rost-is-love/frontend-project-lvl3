@@ -115,7 +115,6 @@ export default () => {
     posts: {
       links: [],
       dscrs: {},
-      count: 0,
     },
     uiState: {
       readedPosts: [],

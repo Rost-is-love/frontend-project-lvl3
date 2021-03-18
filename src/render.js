@@ -23,8 +23,6 @@ export const renderSuccess = (input, message) => {
 };
 
 export const createNewPost = (item, postsList, watchedState) => {
-  watchedState.posts.count += 1;
-  const id = watchedState.posts.count;
   const liEl = document.createElement('li');
   const linkEl = document.createElement('a');
   const btnEl = document.createElement('button');
@@ -33,6 +31,7 @@ export const createNewPost = (item, postsList, watchedState) => {
   const descr = item.querySelector('description').innerHTML;
 
   watchedState.posts.links.push(itemLink);
+  const id = watchedState.posts.links.length;
   watchedState.posts.dscrs[id] = descr;
 
   liEl.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start');
