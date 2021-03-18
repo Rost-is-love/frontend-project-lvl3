@@ -52,7 +52,7 @@ const buildUrl = (rssUrl) => {
 };
 
 const checkUpdates = (watchedState) => {
-  watchedState.feeds.links.forEach((link) => {
+  watchedState.feeds.forEach((link) => {
     axios
       .get(buildUrl(link))
       .then((response) => {
@@ -92,9 +92,7 @@ export default () => {
       valid: true,
       error: '',
     },
-    feeds: {
-      links: [],
-    },
+    feeds: [],
     posts: {
       links: [],
       dscrs: {},
@@ -111,7 +109,7 @@ export default () => {
     const formData = new FormData(e.target);
     const value = formData.get('url');
 
-    if (watchedState.feeds.links.indexOf(value) !== -1) {
+    if (watchedState.feeds.indexOf(value) !== -1) {
       watchedState.form.processState = 'failed';
       watchedState.form.processError = i18next.t('errorMessages.feeds');
     } else {
@@ -124,12 +122,12 @@ export default () => {
           .get(buildUrl(value))
           .then((response) => {
             const doc = parse(response.data.contents);
-            watchedState.feeds.links.push(value);
+            watchedState.feeds.push(value);
             return doc;
           })
           .then((doc) => {
             render(doc, watchedState);
-            if (watchedState.feeds.links.length === 1) {
+            if (watchedState.feeds.length === 1) {
               setTimeout(() => checkUpdates(watchedState), 5000);
             }
           })
