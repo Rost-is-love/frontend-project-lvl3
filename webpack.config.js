@@ -1,20 +1,7 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const path = require('path');
-
-const PATHS = {
-  src: path.join(__dirname, 'src'),
-  public: path.join(__dirname, 'public'),
-};
 
 module.exports = {
   mode: process.env.NODE_ENV || 'development',
-  entry: {
-    main: PATHS.src,
-  },
-  output: {
-    path: PATHS.public,
-    filename: '[name].js',
-  },
   module: {
     rules: [
       {
