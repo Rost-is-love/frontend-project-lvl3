@@ -80,6 +80,31 @@ const checkUpdates = (watchedState) => {
   });
 };
 
+const loadFeed = (watchedState, value) => {
+  axios
+    .get(buildUrl(value))
+    .then((response) => {
+      const doc = parse(response.data.contents);
+      return doc;
+    })
+    .then((doc) => {
+      render(doc, watchedState);
+    })
+    .then(() => {
+      createModal(watchedState);
+      watchedState.feeds.push(value);
+      if (watchedState.feeds.length === 1) {
+        setTimeout(() => checkUpdates(watchedState), 5000);
+      }
+      watchedState.form.processState = 'finished';
+    })
+    .catch((err) => {
+      const errType = err.message === 'notValidRss' ? 'rss' : 'network';
+      watchedState.form.processError = errType;
+      watchedState.form.processState = 'failed';
+    });
+};
+
 export default () => {
   i18next.init({
     lng: 'ru',
@@ -117,30 +142,9 @@ export default () => {
     watchedState.form.fields.url = value;
     updateValidationState(watchedState);
 
-    if (_.isEqual(watchedState.form.error, '')) {
+    if (watchedState.form.valid) {
       watchedState.form.processState = 'sending';
-      axios
-        .get(buildUrl(value))
-        .then((response) => {
-          const doc = parse(response.data.contents);
-          return doc;
-        })
-        .then((doc) => {
-          render(doc, watchedState);
-        })
-        .then(() => {
-          createModal(watchedState);
-          watchedState.feeds.push(value);
-          if (watchedState.feeds.length === 1) {
-            setTimeout(() => checkUpdates(watchedState), 5000);
-          }
-          watchedState.form.processState = 'finished';
-        })
-        .catch((err) => {
-          const errType = err.message === 'notValidRss' ? 'rss' : 'network';
-          watchedState.form.processError = errType;
-          watchedState.form.processState = 'failed';
-        });
+      loadFeed(watchedState, value);
     }
   });
 };
