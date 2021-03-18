@@ -51,7 +51,7 @@ export const createNewPost = (item, postsList, watchedState) => {
 
   liEl.append(linkEl);
   liEl.append(btnEl);
-  if (watchedState.feeds.length === 1) {
+  if (watchedState.feeds.length === 0) {
     postsList.append(liEl);
   } else {
     postsList.prepend(liEl);
@@ -65,7 +65,7 @@ export const render = (doc, watchedState) => {
   const posts = document.querySelector('.posts');
   const postsItems = doc.querySelectorAll('item');
 
-  if (watchedState.feeds.length === 1) {
+  if (watchedState.feeds.length === 0) {
     const newFeedsTitle = document.createElement('h2');
     const newPostsTitle = document.createElement('h2');
     const newFeedsUl = document.createElement('ul');

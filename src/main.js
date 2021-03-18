@@ -123,17 +123,17 @@ export default () => {
         .get(buildUrl(value))
         .then((response) => {
           const doc = parse(response.data.contents);
-          watchedState.feeds.push(value);
           return doc;
         })
         .then((doc) => {
           render(doc, watchedState);
-          if (watchedState.feeds.length === 1) {
-            setTimeout(() => checkUpdates(watchedState), 5000);
-          }
         })
         .then(() => {
           createModal(watchedState);
+          watchedState.feeds.push(value);
+          if (watchedState.feeds.length === 1) {
+            setTimeout(() => checkUpdates(watchedState), 5000);
+          }
           watchedState.form.processState = 'finished';
         })
         .catch((err) => {
