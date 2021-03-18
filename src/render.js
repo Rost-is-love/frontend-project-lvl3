@@ -4,7 +4,7 @@ import i18next from 'i18next';
 export const renderError = (input, error) => {
   const feedbackEl = document.querySelector('.feedback');
   feedbackEl.classList.add('text-danger');
-  feedbackEl.textContent = error;
+  feedbackEl.textContent = i18next.t(`errorMessages.${error}`);
   input.classList.add('is-invalid');
 };
 

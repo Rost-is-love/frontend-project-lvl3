@@ -29,13 +29,13 @@ const validate = (watchedState) => {
   const { fields } = watchedState.form;
   if (watchedState.feeds.indexOf(fields.url) !== -1) {
     watchedState.form.processState = 'failed';
-    return i18next.t('errorMessages.feeds');
+    return 'feeds';
   }
   try {
     schema.validateSync(fields, { abortEarly: false });
     return '';
   } catch {
-    return i18next.t('errorMessages.url');
+    return 'url';
   }
 };
 
@@ -137,11 +137,8 @@ export default () => {
           watchedState.form.processState = 'finished';
         })
         .catch((err) => {
-          // prettier-ignore
-          const message = err.message === 'notValidRss'
-            ? i18next.t('errorMessages.rss')
-            : i18next.t('errorMessages.network');
-          watchedState.form.processError = message;
+          const errType = err.message === 'notValidRss' ? 'rss' : 'network';
+          watchedState.form.processError = errType;
           watchedState.form.processState = 'failed';
         });
     }
