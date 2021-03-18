@@ -25,7 +25,12 @@ const parse = (data) => {
   return doc;
 };
 
-const validate = (fields) => {
+const validate = (watchedState) => {
+  const { fields } = watchedState.form;
+  if (watchedState.feeds.indexOf(fields.url) !== -1) {
+    watchedState.form.processState = 'failed';
+    return i18next.t('errorMessages.feeds');
+  }
   try {
     schema.validateSync(fields, { abortEarly: false });
     return '';
@@ -35,7 +40,7 @@ const validate = (fields) => {
 };
 
 const updateValidationState = (watchedState) => {
-  const error = validate(watchedState.form.fields);
+  const error = validate(watchedState);
   watchedState.form.valid = _.isEqual(error, '');
   watchedState.form.error = error;
 };
@@ -109,43 +114,36 @@ export default () => {
     const formData = new FormData(e.target);
     const value = formData.get('url');
 
-    if (watchedState.feeds.indexOf(value) !== -1) {
-      watchedState.form.processState = 'failed';
-      watchedState.form.processError = i18next.t('errorMessages.feeds');
-    } else {
-      watchedState.form.fields.url = value;
-      updateValidationState(watchedState);
+    watchedState.form.fields.url = value;
+    updateValidationState(watchedState);
 
-      if (_.isEqual(watchedState.form.error, '')) {
-        watchedState.form.processState = 'sending';
-        axios
-          .get(buildUrl(value))
-          .then((response) => {
-            const doc = parse(response.data.contents);
-            watchedState.feeds.push(value);
-            return doc;
-          })
-          .then((doc) => {
-            render(doc, watchedState);
-            if (watchedState.feeds.length === 1) {
-              setTimeout(() => checkUpdates(watchedState), 5000);
-            }
-          })
-          .then(() => {
-            createModal(watchedState);
-            watchedState.form.processState = 'finished';
-          })
-          .catch((err) => {
-            // prettier-ignore
-            const message = err.message === 'notValidRss'
-              ? i18next.t('errorMessages.rss')
-              : i18next.t('errorMessages.network');
-            watchedState.form.processError = message;
-            watchedState.form.processState = 'failed';
-          });
-      } else {
-        watchedState.form.processState = 'failed';
-      }
+    if (_.isEqual(watchedState.form.error, '')) {
+      watchedState.form.processState = 'sending';
+      axios
+        .get(buildUrl(value))
+        .then((response) => {
+          const doc = parse(response.data.contents);
+          watchedState.feeds.push(value);
+          return doc;
+        })
+        .then((doc) => {
+          render(doc, watchedState);
+          if (watchedState.feeds.length === 1) {
+            setTimeout(() => checkUpdates(watchedState), 5000);
+          }
+        })
+        .then(() => {
+          createModal(watchedState);
+          watchedState.form.processState = 'finished';
+        })
+        .catch((err) => {
+          // prettier-ignore
+          const message = err.message === 'notValidRss'
+            ? i18next.t('errorMessages.rss')
+            : i18next.t('errorMessages.network');
+          watchedState.form.processError = message;
+          watchedState.form.processState = 'failed';
+        });
     }
   });
 };
