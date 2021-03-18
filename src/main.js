@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import _ from 'lodash';
+// import _ from 'lodash';
 import * as yup from 'yup';
 import axios from 'axios';
 import i18next from 'i18next';
@@ -12,9 +12,7 @@ import {
 } from './render.js';
 import createModal from './modal.js';
 
-const schema = yup.object().shape({
-  url: yup.string().url().required(),
-});
+const schema = yup.string().url().required();
 
 const parse = (data) => {
   const parser = new DOMParser();
@@ -25,24 +23,20 @@ const parse = (data) => {
   return doc;
 };
 
-const validate = (watchedState) => {
-  const { fields } = watchedState.form;
-  if (watchedState.feeds.indexOf(fields.url) !== -1) {
+const validate = (watchedState, value) => {
+  if (watchedState.feeds.indexOf(value) !== -1) {
     watchedState.form.processState = 'failed';
-    return 'feeds';
+    watchedState.form.error = 'feeds';
+    watchedState.form.valid = false;
+  } else {
+    try {
+      schema.validateSync(value, { abortEarly: false });
+      watchedState.form.valid = true;
+    } catch {
+      watchedState.form.error = 'url';
+      watchedState.form.valid = false;
+    }
   }
-  try {
-    schema.validateSync(fields, { abortEarly: false });
-    return '';
-  } catch {
-    return 'url';
-  }
-};
-
-const updateValidationState = (watchedState) => {
-  const error = validate(watchedState);
-  watchedState.form.valid = _.isEqual(error, '');
-  watchedState.form.error = error;
 };
 
 const buildUrl = (rssUrl) => {
@@ -100,7 +94,7 @@ const loadFeed = (watchedState, value) => {
     })
     .catch((err) => {
       const errType = err.message === 'notValidRss' ? 'rss' : 'network';
-      watchedState.form.processError = errType;
+      watchedState.form.error = errType;
       watchedState.form.processState = 'failed';
     });
 };
@@ -115,10 +109,6 @@ export default () => {
   const state = {
     form: {
       processState: 'filling',
-      processError: null,
-      fields: {
-        url: '',
-      },
       valid: true,
       error: '',
     },
@@ -139,12 +129,14 @@ export default () => {
     const formData = new FormData(e.target);
     const value = formData.get('url');
 
-    watchedState.form.fields.url = value;
-    updateValidationState(watchedState);
+    validate(watchedState, value);
 
     if (watchedState.form.valid) {
+      console.log(watchedState.form.valid);
       watchedState.form.processState = 'sending';
       loadFeed(watchedState, value);
+    } else {
+      watchedState.form.processState = 'failed';
     }
   });
 };

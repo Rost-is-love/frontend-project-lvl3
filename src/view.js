@@ -40,7 +40,6 @@ export default (state) => {
         processStateHandler(value);
         break;
       case 'form.error':
-      case 'form.processError':
         renderError(input, value);
         break;
       default:
