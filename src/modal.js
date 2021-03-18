@@ -16,10 +16,10 @@ export default (watchedState) => {
       modalBody.textContent = descr;
       modalLink.setAttribute('href', titleLink);
 
-      if (watchedState.posts.read.indexOf(id) === -1) {
+      if (watchedState.uiState.readedPosts.indexOf(id) === -1) {
         titleEl.classList.remove('font-weight-bold');
         titleEl.classList.add('font-weight-normal');
-        watchedState.posts.read.push(id);
+        watchedState.uiState.readedPosts.push(id);
       }
     });
   });
