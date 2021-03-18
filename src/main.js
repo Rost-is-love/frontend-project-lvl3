@@ -70,9 +70,9 @@ const checkUpdates = (watchedState) => {
           }
         });
       })
-      .then(() => createModal(watchedState));
+      .then(() => createModal(watchedState))
+      .then(() => setTimeout(() => checkUpdates(watchedState), 5000));
   });
-  setTimeout(() => checkUpdates(watchedState), 5000);
 };
 
 export default () => {
