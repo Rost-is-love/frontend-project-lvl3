@@ -1,5 +1,4 @@
 /* eslint-disable no-param-reassign */
-// import _ from 'lodash';
 import * as yup from 'yup';
 import axios from 'axios';
 import i18next from 'i18next';
