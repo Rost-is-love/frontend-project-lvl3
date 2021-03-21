@@ -2,15 +2,17 @@ import i18next from 'i18next';
 import onChange from 'on-change';
 // prettier-ignore
 import {
+  render,
   renderError,
   renderSuccess,
 } from './render.js';
+import createModal from './modal.js';
 
 export default (state) => {
   const input = document.querySelector('[aria-label="url"]');
   const submitButton = document.querySelector('[aria-label="add"]');
 
-  const processStateHandler = (processState) => {
+  const processStateHandler = (processState, watchedState) => {
     switch (processState) {
       case 'failed':
         submitButton.disabled = false;
@@ -27,6 +29,7 @@ export default (state) => {
       case 'finished':
         submitButton.disabled = false;
         input.readOnly = false;
+        createModal(watchedState);
         renderSuccess(input, i18next.t('successMessages.feeds'));
         break;
       default:
@@ -37,10 +40,13 @@ export default (state) => {
   const watchedState = onChange(state, (path, value) => {
     switch (path) {
       case 'form.processState':
-        processStateHandler(value);
+        processStateHandler(value, watchedState);
         break;
       case 'form.error':
         renderError(input, value);
+        break;
+      case 'newDoc':
+        render(value, watchedState);
         break;
       default:
         break;

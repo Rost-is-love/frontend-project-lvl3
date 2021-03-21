@@ -6,7 +6,6 @@ import resources from './locales/ru.js';
 import buildWatchedState from './view.js';
 // prettier-ignore
 import {
-  render,
   createNewPost,
 } from './render.js';
 import createModal from './modal.js';
@@ -81,10 +80,9 @@ const loadFeed = (watchedState, value) => {
       return doc;
     })
     .then((doc) => {
-      render(doc, watchedState);
+      watchedState.newDoc = doc;
     })
     .then(() => {
-      createModal(watchedState);
       watchedState.feeds.push(value);
       if (watchedState.feeds.length === 1) {
         setTimeout(() => checkUpdates(watchedState), 5000);
@@ -111,6 +109,7 @@ export default () => {
       valid: true,
       error: '',
     },
+    newDoc: null,
     feeds: [],
     posts: {
       links: [],
@@ -132,7 +131,6 @@ export default () => {
     validate(watchedState, value);
 
     if (watchedState.form.valid) {
-      console.log(watchedState.form.valid);
       watchedState.form.processState = 'sending';
       loadFeed(watchedState, value);
     } else {
