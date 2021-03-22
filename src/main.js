@@ -4,10 +4,6 @@ import axios from 'axios';
 import i18next from 'i18next';
 import resources from './locales/ru.js';
 import buildWatchedState from './view.js';
-// prettier-ignore
-import {
-  createNewPost,
-} from './render.js';
 
 const schema = yup.string().url().required();
 
@@ -31,7 +27,8 @@ const parse = (data) => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(data, 'text/xml');
   if (doc.querySelector('parsererror')) {
-    throw new Error('notValidRss');
+    const errorText = doc.querySelector('parsererror > div').innerHTML;
+    throw new Error(errorText);
   } else {
     const feedTitle = doc.querySelector('title').innerHTML;
     const feedDscr = doc.querySelector('description').innerHTML;
@@ -98,7 +95,7 @@ const loadFeed = (watchedState, value) => {
       watchedState.form.processState = 'finished';
     })
     .catch((err) => {
-      const errType = err.message === 'notValidRss' ? 'rss' : 'network';
+      const errType = err.isAxiosError ? 'network' : 'rss';
       watchedState.form.error = errType;
       watchedState.form.processState = 'failed';
     });

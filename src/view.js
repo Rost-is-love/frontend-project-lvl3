@@ -1,11 +1,7 @@
+/* eslint-disable no-param-reassign */
 import i18next from 'i18next';
 import onChange from 'on-change';
 import _ from 'lodash';
-// prettier-ignore
-import {
-  renderError,
-  renderSuccess,
-} from './render.js';
 
 const feedRender = (value, previousValue, watchedState) => {
   const newFeed = _.differenceWith(value, previousValue, _.isEqual)[0];
@@ -93,6 +89,27 @@ const openModal = (id, watchedState) => {
     titleEl.classList.add('font-weight-normal');
     watchedState.uiState.readedPosts.push(id);
   }
+};
+
+const renderError = (input, error) => {
+  const feedbackEl = document.querySelector('.feedback');
+  feedbackEl.classList.add('text-danger');
+  feedbackEl.textContent = i18next.t(`errorMessages.${error}`);
+  input.classList.add('is-invalid');
+};
+
+const renderSuccess = (input, message) => {
+  const feedbackEl = document.querySelector('.feedback');
+  feedbackEl.classList.add('text-success');
+  feedbackEl.textContent = message;
+
+  if (feedbackEl.classList.contains('text-danger')) {
+    feedbackEl.classList.remove('text-danger');
+    input.classList.remove('is-invalid');
+  }
+
+  input.value = '';
+  input.focus();
 };
 
 export default (state) => {
