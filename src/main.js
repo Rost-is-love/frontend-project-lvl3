@@ -12,17 +12,8 @@ import createModal from './modal.js';
 
 const schema = yup.string().url().required();
 
-const parse = (data) => {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(data, 'text/xml');
-  if (doc.querySelector('parsererror')) {
-    throw new Error('notValidRss');
-  }
-  return doc;
-};
-
 const validate = (watchedState, value) => {
-  if (watchedState.feeds.indexOf(value) !== -1) {
+  if (watchedState.links.indexOf(value) !== -1) {
     watchedState.form.processState = 'failed';
     watchedState.form.error = 'feeds';
     watchedState.form.valid = false;
@@ -34,6 +25,31 @@ const validate = (watchedState, value) => {
       watchedState.form.error = 'url';
       watchedState.form.valid = false;
     }
+  }
+};
+
+const parse = (data) => {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(data, 'text/xml');
+  if (doc.querySelector('parsererror')) {
+    console.log(data, doc.querySelector('parsererror'));
+    throw new Error('notValidRss');
+  } else {
+    const feedTitle = doc.querySelector('title').innerHTML;
+    const feedDscr = doc.querySelector('description').innerHTML;
+    const items = doc.querySelectorAll('item');
+
+    const postsData = Array.from(items).map((item) => {
+      const title = item.querySelector('title').innerHTML;
+      const descr = item.querySelector('description').innerHTML;
+      const link = item.querySelector('link').innerHTML;
+      return { title, descr, link };
+    });
+
+    return {
+      feeds: [{ title: feedTitle, descr: feedDscr }],
+      posts: postsData,
+    };
   }
 };
 
@@ -76,20 +92,16 @@ const loadFeed = (watchedState, value) => {
   axios
     .get(buildUrl(value))
     .then((response) => {
-      const doc = parse(response.data.contents);
-      return doc;
-    })
-    .then((doc) => {
-      watchedState.newDoc = doc;
+      const data = parse(response.data.contents);
+      watchedState.data.feeds = [...watchedState.data.feeds, ...data.feeds];
+      watchedState.data.posts = [...watchedState.data.posts, ...data.posts];
     })
     .then(() => {
-      watchedState.feeds.push(value);
-      if (watchedState.feeds.length === 1) {
-        setTimeout(() => checkUpdates(watchedState), 5000);
-      }
+      watchedState.links.push(value);
       watchedState.form.processState = 'finished';
     })
     .catch((err) => {
+      console.log(err);
       const errType = err.message === 'notValidRss' ? 'rss' : 'network';
       watchedState.form.error = errType;
       watchedState.form.processState = 'failed';
@@ -109,13 +121,14 @@ export default () => {
       valid: true,
       error: '',
     },
+    links: [],
     newDoc: null,
-    feeds: [],
-    posts: {
-      links: [],
-      dscrs: {},
+    data: {
+      feeds: [],
+      posts: [],
     },
     uiState: {
+      modalPostId: null,
       readedPosts: [],
     },
   };
@@ -137,4 +150,6 @@ export default () => {
       watchedState.form.processState = 'failed';
     }
   });
+
+  setTimeout(() => checkUpdates(watchedState), 5000);
 };

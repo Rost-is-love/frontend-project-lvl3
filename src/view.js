@@ -1,12 +1,82 @@
 import i18next from 'i18next';
 import onChange from 'on-change';
+import _ from 'lodash';
 // prettier-ignore
 import {
-  render,
   renderError,
   renderSuccess,
 } from './render.js';
 import createModal from './modal.js';
+
+const feedRender = (value, previousValue, watchedState) => {
+  const newFeed = _.differenceWith(value, previousValue, _.isEqual)[0];
+  const feeds = document.querySelector('.feeds');
+
+  if (watchedState.links.length === 0) {
+    const newFeedsTitle = document.createElement('h2');
+    const newFeedsUl = document.createElement('ul');
+    newFeedsUl.classList.add('list-group', 'mb-5');
+    newFeedsTitle.textContent = i18next.t('titles.feeds');
+    feeds.append(newFeedsTitle);
+    feeds.append(newFeedsUl);
+  }
+
+  const feedItem = document.createElement('li');
+  const feedItemTitle = document.createElement('h3');
+  const feedItemDescr = document.createElement('p');
+  const feedsList = feeds.querySelector('.list-group');
+  feedItem.classList.add('list-group-item');
+  feedItemTitle.textContent = newFeed.title;
+  feedItemDescr.textContent = newFeed.descr;
+  feedItem.append(feedItemTitle);
+  feedItem.append(feedItemDescr);
+  feedsList.prepend(feedItem);
+};
+
+const postsRender = (value, previousValue, watchedState) => {
+  const newPosts = _.differenceWith(value, previousValue, _.isEqual);
+  const posts = document.querySelector('.posts');
+
+  if (watchedState.links.length === 0) {
+    const newPostsTitle = document.createElement('h2');
+    const newPosstUl = document.createElement('ul');
+    newPosstUl.classList.add('list-group');
+    newPostsTitle.textContent = i18next.t('titles.posts');
+    posts.append(newPostsTitle);
+    posts.append(newPosstUl);
+  }
+
+  newPosts.forEach((post) => {
+    const postsList = posts.querySelector('.list-group');
+    const liEl = document.createElement('li');
+    const linkEl = document.createElement('a');
+    const btnEl = document.createElement('button');
+    const id = value.indexOf(post);
+
+    liEl.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start');
+    linkEl.classList.add('font-weight-bold');
+    linkEl.setAttribute('data-id', `${id}`);
+    linkEl.setAttribute('target', '_blank');
+    linkEl.setAttribute('rel', 'noopener noreferrer');
+    linkEl.setAttribute('href', post.link);
+    linkEl.textContent = post.title;
+    btnEl.classList.add('btn', 'btn-primary', 'btn-sm');
+    btnEl.setAttribute('type', 'button');
+    btnEl.setAttribute('data-id', `${id}`);
+    btnEl.setAttribute('data-toggle', 'modal');
+    btnEl.setAttribute('data-target', '#modal');
+    btnEl.textContent = i18next.t('buttons.post');
+
+    liEl.append(linkEl);
+    liEl.append(btnEl);
+    console.log(posts, postsList);
+    if (watchedState.links.length === 0) {
+      postsList.append(liEl);
+    } else {
+      postsList.prepend(liEl);
+    }
+  });
+};
 
 export default (state) => {
   const input = document.querySelector('[aria-label="url"]');
@@ -37,7 +107,7 @@ export default (state) => {
     }
   };
 
-  const watchedState = onChange(state, (path, value) => {
+  const watchedState = onChange(state, (path, value, previousValue) => {
     switch (path) {
       case 'form.processState':
         processStateHandler(value, watchedState);
@@ -45,8 +115,11 @@ export default (state) => {
       case 'form.error':
         renderError(input, value);
         break;
-      case 'newDoc':
-        render(value, watchedState);
+      case 'data.feeds':
+        feedRender(value, previousValue, watchedState);
+        break;
+      case 'data.posts':
+        postsRender(value, previousValue, watchedState);
         break;
       default:
         break;
