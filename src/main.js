@@ -8,7 +8,6 @@ import buildWatchedState from './view.js';
 import {
   createNewPost,
 } from './render.js';
-import createModal from './modal.js';
 
 const schema = yup.string().url().required();
 
@@ -32,7 +31,6 @@ const parse = (data) => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(data, 'text/xml');
   if (doc.querySelector('parsererror')) {
-    console.log(data, doc.querySelector('parsererror'));
     throw new Error('notValidRss');
   } else {
     const feedTitle = doc.querySelector('title').innerHTML;
@@ -65,7 +63,7 @@ const buildUrl = (rssUrl) => {
 };
 
 const checkUpdates = (watchedState) => {
-  watchedState.feeds.forEach((link) => {
+  watchedState.links.forEach((link) => {
     axios
       .get(buildUrl(link))
       .then((response) => {
@@ -83,7 +81,6 @@ const checkUpdates = (watchedState) => {
           }
         });
       })
-      .then(() => createModal(watchedState))
       .then(() => setTimeout(() => checkUpdates(watchedState), 5000));
   });
 };
@@ -101,7 +98,6 @@ const loadFeed = (watchedState, value) => {
       watchedState.form.processState = 'finished';
     })
     .catch((err) => {
-      console.log(err);
       const errType = err.message === 'notValidRss' ? 'rss' : 'network';
       watchedState.form.error = errType;
       watchedState.form.processState = 'failed';
@@ -148,6 +144,14 @@ export default () => {
       loadFeed(watchedState, value);
     } else {
       watchedState.form.processState = 'failed';
+    }
+  });
+
+  const posts = document.querySelector('.posts');
+  posts.addEventListener('click', (e) => {
+    if (e.target.hasAttribute('data-target')) {
+      const curPostId = e.target.getAttribute('data-id');
+      watchedState.uiState.modalPostId = curPostId;
     }
   });
 

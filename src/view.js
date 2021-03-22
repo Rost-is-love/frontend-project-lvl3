@@ -6,7 +6,6 @@ import {
   renderError,
   renderSuccess,
 } from './render.js';
-import createModal from './modal.js';
 
 const feedRender = (value, previousValue, watchedState) => {
   const newFeed = _.differenceWith(value, previousValue, _.isEqual)[0];
@@ -69,7 +68,7 @@ const postsRender = (value, previousValue, watchedState) => {
 
     liEl.append(linkEl);
     liEl.append(btnEl);
-    console.log(posts, postsList);
+
     if (watchedState.links.length === 0) {
       postsList.append(liEl);
     } else {
@@ -78,11 +77,29 @@ const postsRender = (value, previousValue, watchedState) => {
   });
 };
 
+const openModal = (id, watchedState) => {
+  const curPost = watchedState.data.posts[id];
+  const modalTitle = document.querySelector('.modal-title');
+  const modalBody = document.querySelector('.modal-body');
+  const modalLink = document.querySelector('div.modal-footer > a');
+  const titleEl = document.querySelector(`a[data-id="${id}"]`);
+
+  modalTitle.textContent = curPost.title;
+  modalBody.textContent = curPost.descr;
+  modalLink.setAttribute('href', curPost.link);
+
+  if (watchedState.uiState.readedPosts.indexOf(id) === -1) {
+    titleEl.classList.remove('font-weight-bold');
+    titleEl.classList.add('font-weight-normal');
+    watchedState.uiState.readedPosts.push(id);
+  }
+};
+
 export default (state) => {
   const input = document.querySelector('[aria-label="url"]');
   const submitButton = document.querySelector('[aria-label="add"]');
 
-  const processStateHandler = (processState, watchedState) => {
+  const processStateHandler = (processState) => {
     switch (processState) {
       case 'failed':
         submitButton.disabled = false;
@@ -99,7 +116,6 @@ export default (state) => {
       case 'finished':
         submitButton.disabled = false;
         input.readOnly = false;
-        createModal(watchedState);
         renderSuccess(input, i18next.t('successMessages.feeds'));
         break;
       default:
@@ -120,6 +136,9 @@ export default (state) => {
         break;
       case 'data.posts':
         postsRender(value, previousValue, watchedState);
+        break;
+      case 'uiState.modalPostId':
+        openModal(value, watchedState);
         break;
       default:
         break;
