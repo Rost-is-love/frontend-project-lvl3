@@ -107,7 +107,6 @@ export default () => {
       error: '',
     },
     links: [],
-    newDoc: null,
     data: {
       feeds: [],
       posts: [],
