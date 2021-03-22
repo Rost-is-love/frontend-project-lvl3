@@ -2,6 +2,7 @@
 import * as yup from 'yup';
 import axios from 'axios';
 import i18next from 'i18next';
+import _ from 'lodash';
 import resources from './locales/ru.js';
 import buildWatchedState from './view.js';
 
@@ -60,25 +61,16 @@ const buildUrl = (rssUrl) => {
 };
 
 const checkUpdates = (watchedState) => {
-  watchedState.links.forEach((link) => {
-    axios
-      .get(buildUrl(link))
-      .then((response) => {
-        const doc = parse(response.data.contents);
-        return doc;
-      })
-      .then((doc) => {
-        const posts = doc.querySelectorAll('item');
-        const postsCont = document.querySelector('.posts');
-        const postsList = postsCont.querySelector('.list-group');
-        posts.forEach((post) => {
-          const postLink = post.querySelector('link').innerHTML;
-          if (watchedState.posts.links.indexOf(postLink) === -1) {
-            createNewPost(post, postsList, watchedState);
-          }
-        });
-      })
-      .then(() => setTimeout(() => checkUpdates(watchedState), 5000));
+  const requestes = watchedState.links.map((link) => axios.get(buildUrl(link)));
+  Promise.all(requestes).then((response) => {
+    const newPosts = response.flatMap((feed) => {
+      const data = parse(feed.data.contents);
+      return _.differenceWith(data.posts, watchedState.data.posts, _.isEqual);
+    });
+    if (newPosts.length !== 0) {
+      watchedState.data.posts = [...watchedState.data.posts, ...newPosts];
+    }
+    setTimeout(() => checkUpdates(watchedState), 5000);
   });
 };
 
