@@ -29,9 +29,9 @@ const parse = (data, feedUrl) => {
 
   const feedTitle = doc.querySelector('title').innerHTML;
   const feedDscr = doc.querySelector('description').innerHTML;
-  const items = doc.querySelectorAll('item');
+  const itemsEl = doc.querySelectorAll('item');
 
-  const postsData = Array.from(items).map((item) => {
+  const items = Array.from(itemsEl).map((item) => {
     const title = item.querySelector('title').innerHTML;
     const description = item.querySelector('description').innerHTML;
     const link = item.querySelector('link').innerHTML;
@@ -40,7 +40,7 @@ const parse = (data, feedUrl) => {
 
   return {
     feeds: [{ title: feedTitle, description: feedDscr, url: feedUrl }],
-    posts: postsData,
+    posts: items,
   };
 };
 
@@ -70,6 +70,7 @@ const checkUpdates = (watchedState) => {
 };
 
 const loadFeed = (watchedState, value) => {
+  watchedState.form.processState = 'sending';
   axios
     .get(buildUrl(value))
     .then((response) => {
@@ -121,11 +122,9 @@ export default () => {
     const error = validate(value, curFeedsUrls);
 
     if (error) {
-      watchedState.form.processState = 'failed';
       watchedState.form.valid = false;
       watchedState.form.error = error;
     } else {
-      watchedState.form.processState = 'sending';
       loadFeed(watchedState, value);
     }
   });
