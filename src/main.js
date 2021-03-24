@@ -8,23 +8,18 @@ import buildWatchedState from './view.js';
 
 const schema = yup.string().url().required();
 
-const validate = (watchedState, value) => {
-  if (watchedState.links.indexOf(value) !== -1) {
-    watchedState.form.processState = 'failed';
-    watchedState.form.error = 'feeds';
-    watchedState.form.valid = false;
-  } else {
-    try {
-      schema.validateSync(value, { abortEarly: false });
-      watchedState.form.valid = true;
-    } catch {
-      watchedState.form.error = 'url';
-      watchedState.form.valid = false;
-    }
+const validate = (value, curFeedsUrls) => {
+  const expandedScheme = schema.notOneOf(curFeedsUrls);
+  try {
+    expandedScheme.validateSync(value, { abortEarly: false });
+    return null;
+  } catch (e) {
+    const errType = e.message === 'this must be a valid URL' ? 'url' : 'feeds';
+    return errType;
   }
 };
 
-const parse = (data) => {
+const parse = (data, feedUrl) => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(data, 'text/xml');
   if (doc.querySelector('parsererror')) {
@@ -43,7 +38,7 @@ const parse = (data) => {
     });
 
     return {
-      feeds: [{ title: feedTitle, descr: feedDscr }],
+      feeds: [{ title: feedTitle, descr: feedDscr, url: feedUrl }],
       posts: postsData,
     };
   }
@@ -61,7 +56,7 @@ const buildUrl = (rssUrl) => {
 };
 
 const checkUpdates = (watchedState) => {
-  const requestes = watchedState.links.map((link) => axios.get(buildUrl(link)));
+  const requestes = watchedState.feeds.map((feed) => axios.get(buildUrl(feed.url)));
   Promise.all(requestes).then((response) => {
     const newPosts = response.flatMap((feed) => {
       const data = parse(feed.data.contents);
@@ -78,12 +73,11 @@ const loadFeed = (watchedState, value) => {
   axios
     .get(buildUrl(value))
     .then((response) => {
-      const data = parse(response.data.contents);
+      const data = parse(response.data.contents, value);
       watchedState.feeds = [...watchedState.feeds, ...data.feeds];
       watchedState.posts = [...watchedState.posts, ...data.posts];
     })
     .then(() => {
-      watchedState.links.push(value);
       watchedState.form.processState = 'finished';
     })
     .catch((err) => {
@@ -104,7 +98,7 @@ export default () => {
     form: {
       processState: 'filling',
       valid: true,
-      error: '',
+      error: null,
     },
     links: [],
     feeds: [],
@@ -122,14 +116,17 @@ export default () => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const value = formData.get('url');
+    const curFeedsUrls = watchedState.feeds.map(({ url }) => url);
 
-    validate(watchedState, value);
+    const error = validate(value, curFeedsUrls);
 
-    if (watchedState.form.valid) {
+    if (error) {
+      watchedState.form.processState = 'failed';
+      watchedState.form.valid = false;
+      watchedState.form.error = error;
+    } else {
       watchedState.form.processState = 'sending';
       loadFeed(watchedState, value);
-    } else {
-      watchedState.form.processState = 'failed';
     }
   });
 

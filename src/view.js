@@ -7,7 +7,7 @@ const feedRender = (value, previousValue, watchedState) => {
   const newFeed = _.differenceWith(value, previousValue, _.isEqual)[0];
   const feeds = document.querySelector('.feeds');
 
-  if (watchedState.links.length === 0) {
+  if (watchedState.feeds.length === 1) {
     const newFeedsTitle = document.createElement('h2');
     const newFeedsUl = document.createElement('ul');
     newFeedsUl.classList.add('list-group', 'mb-5');
@@ -32,7 +32,7 @@ const postsRender = (value, previousValue, watchedState) => {
   const newPosts = _.differenceWith(value, previousValue, _.isEqual);
   const posts = document.querySelector('.posts');
 
-  if (watchedState.links.length === 0) {
+  if (watchedState.feeds.length === 1) {
     const newPostsTitle = document.createElement('h2');
     const newPosstUl = document.createElement('ul');
     newPosstUl.classList.add('list-group');
@@ -65,7 +65,7 @@ const postsRender = (value, previousValue, watchedState) => {
     liEl.append(linkEl);
     liEl.append(btnEl);
 
-    if (watchedState.links.length === 0) {
+    if (watchedState.feeds.length === 1) {
       postsList.append(liEl);
     } else {
       postsList.prepend(liEl);
