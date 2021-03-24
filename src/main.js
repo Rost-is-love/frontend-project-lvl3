@@ -23,9 +23,7 @@ const parse = (data, feedUrl) => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(data, 'text/xml');
   if (doc.querySelector('parsererror')) {
-    // const errorText = doc.querySelector('parsererror > div').innerHTML;
-    console.log(doc.querySelector('parsererror'));
-    throw new Error('Parsing error');
+    throw new Error(`Parsing error: ${doc.querySelector('parsererror')}`);
   }
 
   const feedTitle = doc.querySelector('title').innerHTML;
@@ -64,7 +62,7 @@ const getErrorType = (err) => {
     return 'rss';
   }
 
-  console.log(err);
+  throw new Error(err.message);
 };
 
 const checkUpdates = (watchedState) => {
