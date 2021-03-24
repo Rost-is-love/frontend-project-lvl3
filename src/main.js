@@ -63,7 +63,7 @@ const getErrorType = (err) => {
     return 'rss';
   }
 
-  throw new Error(err);
+  console.log(err);
 };
 
 const checkUpdates = (watchedState) => {
