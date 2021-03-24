@@ -33,13 +33,13 @@ const parse = (data, feedUrl) => {
 
   const postsData = Array.from(items).map((item) => {
     const title = item.querySelector('title').innerHTML;
-    const descr = item.querySelector('description').innerHTML;
+    const description = item.querySelector('description').innerHTML;
     const link = item.querySelector('link').innerHTML;
-    return { title, descr, link };
+    return { title, description, link };
   });
 
   return {
-    feeds: [{ title: feedTitle, descr: feedDscr, url: feedUrl }],
+    feeds: [{ title: feedTitle, description: feedDscr, url: feedUrl }],
     posts: postsData,
   };
 };

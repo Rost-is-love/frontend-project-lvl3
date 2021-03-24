@@ -22,7 +22,7 @@ const feedRender = (value, previousValue, watchedState) => {
   const feedsList = feeds.querySelector('.list-group');
   feedItem.classList.add('list-group-item');
   feedItemTitle.textContent = newFeed.title;
-  feedItemDescr.textContent = newFeed.descr;
+  feedItemDescr.textContent = newFeed.description;
   feedItem.append(feedItemTitle);
   feedItem.append(feedItemDescr);
   feedsList.prepend(feedItem);
@@ -81,7 +81,7 @@ const openModal = (id, watchedState) => {
   const titleEl = document.querySelector(`a[data-id="${id}"]`);
 
   modalTitle.textContent = curPost.title;
-  modalBody.textContent = curPost.descr;
+  modalBody.textContent = curPost.description;
   modalLink.setAttribute('href', curPost.link);
 
   if (watchedState.uiState.readedPosts.indexOf(id) === -1) {
