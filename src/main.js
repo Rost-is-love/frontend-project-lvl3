@@ -67,16 +67,22 @@ const getErrorType = (err) => {
 
 const checkUpdates = (watchedState) => {
   const requestes = watchedState.feeds.map((feed) => axios.get(buildUrl(feed.url)));
-  Promise.all(requestes).then((response) => {
-    const newPosts = response.flatMap((feed) => {
-      const data = parse(feed.data.contents);
-      return _.differenceWith(data.posts, watchedState.posts, _.isEqual);
+  Promise.all(requestes)
+    .then((response) => {
+      const newPosts = response.flatMap((feed) => {
+        const data = parse(feed.data.contents);
+        return _.differenceWith(data.posts, watchedState.posts, _.isEqual);
+      });
+      if (newPosts.length !== 0) {
+        watchedState.posts = [...watchedState.posts, ...newPosts];
+      }
+      setTimeout(() => checkUpdates(watchedState), 5000);
+    })
+    .catch((err) => {
+      const errType = getErrorType(err);
+      watchedState.form.error = errType;
+      watchedState.form.processState = 'failed';
     });
-    if (newPosts.length !== 0) {
-      watchedState.posts = [...watchedState.posts, ...newPosts];
-    }
-    setTimeout(() => checkUpdates(watchedState), 5000);
-  });
 };
 
 const loadFeed = (watchedState, value) => {
