@@ -23,8 +23,8 @@ const parse = (data, feedUrl) => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(data, 'text/xml');
   if (doc.querySelector('parsererror')) {
-    const errorText = doc.querySelector('parsererror > div').innerHTML;
-    throw new Error(`Parsing error: ${errorText}`);
+    // const errorText = doc.querySelector('parsererror > div').innerHTML;
+    throw new Error('Parsing error');
   }
 
   const feedTitle = doc.querySelector('title').innerHTML;
