@@ -125,10 +125,21 @@ export default () => {
     },
   };
 
-  const form = document.querySelector('.rss-form');
-  const watchedState = buildWatchedState(state);
+  const elements = {
+    form: document.querySelector('.rss-form'),
+    input: document.querySelector('[aria-label="url"]'),
+    submitButton: document.querySelector('[aria-label="add"]'),
+    feeds: document.querySelector('.feeds'),
+    posts: document.querySelector('.posts'),
+    feedbackEl: document.querySelector('.feedback'),
+    modalTitle: document.querySelector('.modal-title'),
+    modalBody: document.querySelector('.modal-body'),
+    modalLink: document.querySelector('div.modal-footer > a'),
+  };
 
-  form.addEventListener('submit', (e) => {
+  const watchedState = buildWatchedState(state, elements);
+
+  elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const value = formData.get('url');
@@ -144,8 +155,7 @@ export default () => {
     }
   });
 
-  const posts = document.querySelector('.posts');
-  posts.addEventListener('click', (e) => {
+  elements.posts.addEventListener('click', (e) => {
     if (e.target.hasAttribute('data-target')) {
       const curPostId = e.target.getAttribute('data-id');
       watchedState.uiState.modalPostId = curPostId;
