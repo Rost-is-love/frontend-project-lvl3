@@ -25,23 +25,23 @@ const parse = (data, feedUrl) => {
   if (doc.querySelector('parsererror')) {
     const errorText = doc.querySelector('parsererror > div').innerHTML;
     throw new Error(errorText);
-  } else {
-    const feedTitle = doc.querySelector('title').innerHTML;
-    const feedDscr = doc.querySelector('description').innerHTML;
-    const items = doc.querySelectorAll('item');
-
-    const postsData = Array.from(items).map((item) => {
-      const title = item.querySelector('title').innerHTML;
-      const descr = item.querySelector('description').innerHTML;
-      const link = item.querySelector('link').innerHTML;
-      return { title, descr, link };
-    });
-
-    return {
-      feeds: [{ title: feedTitle, descr: feedDscr, url: feedUrl }],
-      posts: postsData,
-    };
   }
+
+  const feedTitle = doc.querySelector('title').innerHTML;
+  const feedDscr = doc.querySelector('description').innerHTML;
+  const items = doc.querySelectorAll('item');
+
+  const postsData = Array.from(items).map((item) => {
+    const title = item.querySelector('title').innerHTML;
+    const descr = item.querySelector('description').innerHTML;
+    const link = item.querySelector('link').innerHTML;
+    return { title, descr, link };
+  });
+
+  return {
+    feeds: [{ title: feedTitle, descr: feedDscr, url: feedUrl }],
+    posts: postsData,
+  };
 };
 
 const buildUrl = (rssUrl) => {
