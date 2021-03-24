@@ -24,6 +24,7 @@ const parse = (data, feedUrl) => {
   const doc = parser.parseFromString(data, 'text/xml');
   if (doc.querySelector('parsererror')) {
     // const errorText = doc.querySelector('parsererror > div').innerHTML;
+    console.log(doc.querySelector('parsererror'));
     throw new Error('Parsing error');
   }
 
