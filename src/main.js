@@ -65,10 +65,10 @@ const checkUpdates = (watchedState) => {
   Promise.all(requestes).then((response) => {
     const newPosts = response.flatMap((feed) => {
       const data = parse(feed.data.contents);
-      return _.differenceWith(data.posts, watchedState.data.posts, _.isEqual);
+      return _.differenceWith(data.posts, watchedState.posts, _.isEqual);
     });
     if (newPosts.length !== 0) {
-      watchedState.data.posts = [...watchedState.data.posts, ...newPosts];
+      watchedState.posts = [...watchedState.posts, ...newPosts];
     }
     setTimeout(() => checkUpdates(watchedState), 5000);
   });
@@ -79,8 +79,8 @@ const loadFeed = (watchedState, value) => {
     .get(buildUrl(value))
     .then((response) => {
       const data = parse(response.data.contents);
-      watchedState.data.feeds = [...watchedState.data.feeds, ...data.feeds];
-      watchedState.data.posts = [...watchedState.data.posts, ...data.posts];
+      watchedState.feeds = [...watchedState.feeds, ...data.feeds];
+      watchedState.posts = [...watchedState.posts, ...data.posts];
     })
     .then(() => {
       watchedState.links.push(value);
@@ -107,10 +107,8 @@ export default () => {
       error: '',
     },
     links: [],
-    data: {
-      feeds: [],
-      posts: [],
-    },
+    feeds: [],
+    posts: [],
     uiState: {
       modalPostId: null,
       readedPosts: [],

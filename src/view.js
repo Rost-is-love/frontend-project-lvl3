@@ -74,7 +74,7 @@ const postsRender = (value, previousValue, watchedState) => {
 };
 
 const openModal = (id, watchedState) => {
-  const curPost = watchedState.data.posts[id];
+  const curPost = watchedState.posts[id];
   const modalTitle = document.querySelector('.modal-title');
   const modalBody = document.querySelector('.modal-body');
   const modalLink = document.querySelector('div.modal-footer > a');
@@ -148,10 +148,10 @@ export default (state) => {
       case 'form.error':
         renderError(input, value);
         break;
-      case 'data.feeds':
+      case 'feeds':
         feedRender(value, previousValue, watchedState);
         break;
-      case 'data.posts':
+      case 'posts':
         postsRender(value, previousValue, watchedState);
         break;
       case 'uiState.modalPostId':
