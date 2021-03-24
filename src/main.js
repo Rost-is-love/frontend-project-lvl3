@@ -24,7 +24,7 @@ const parse = (data, feedUrl) => {
   const doc = parser.parseFromString(data, 'text/xml');
   if (doc.querySelector('parsererror')) {
     const errorText = doc.querySelector('parsererror > div').innerHTML;
-    throw new Error(errorText);
+    throw new Error(`Parsing error: ${errorText}`);
   }
 
   const feedTitle = doc.querySelector('title').innerHTML;
@@ -55,6 +55,17 @@ const buildUrl = (rssUrl) => {
   return url.toString();
 };
 
+const getErrorType = (err) => {
+  if (err.isAxiosError) {
+    return 'network';
+  }
+  if (err.message.startsWith('Parsing error')) {
+    return 'rss';
+  }
+
+  throw new Error(err.message);
+};
+
 const checkUpdates = (watchedState) => {
   const requestes = watchedState.feeds.map((feed) => axios.get(buildUrl(feed.url)));
   Promise.all(requestes).then((response) => {
@@ -82,7 +93,7 @@ const loadFeed = (watchedState, value) => {
       watchedState.form.processState = 'finished';
     })
     .catch((err) => {
-      const errType = err.isAxiosError ? 'network' : 'rss';
+      const errType = getErrorType(err);
       watchedState.form.error = errType;
       watchedState.form.processState = 'failed';
     });
@@ -101,7 +112,6 @@ export default () => {
       valid: true,
       error: null,
     },
-    links: [],
     feeds: [],
     posts: [],
     uiState: {
