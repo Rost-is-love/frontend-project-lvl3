@@ -34,7 +34,13 @@ const parse = (data, feedUrl) => {
     const title = item.querySelector('title').innerHTML;
     const description = item.querySelector('description').innerHTML;
     const link = item.querySelector('link').innerHTML;
-    return { title, description, link };
+    const id = _.uniqueId();
+    return {
+      title,
+      description,
+      link,
+      id,
+    };
   });
 
   return {
@@ -71,10 +77,10 @@ const checkUpdates = (watchedState) => {
     .then((response) => {
       const newPosts = response.flatMap((feed) => {
         const data = parse(feed.data.contents);
-        return _.differenceWith(data.posts, watchedState.posts, _.isEqual);
+        return _.differenceBy(data.posts, watchedState.posts, 'title');
       });
       if (newPosts.length !== 0) {
-        watchedState.posts = [...watchedState.posts, ...newPosts];
+        watchedState.posts = [...newPosts, ...watchedState.posts];
       }
       setTimeout(() => checkUpdates(watchedState), 5000);
     })
@@ -92,7 +98,7 @@ const loadFeed = (watchedState, value) => {
     .then((response) => {
       const data = parse(response.data.contents, value);
       watchedState.feeds = [...watchedState.feeds, ...data.feeds];
-      watchedState.posts = [...watchedState.posts, ...data.posts];
+      watchedState.posts = [...data.posts, ...watchedState.posts];
     })
     .then(() => {
       watchedState.form.processState = 'finished';
@@ -129,8 +135,8 @@ export default () => {
     form: document.querySelector('.rss-form'),
     input: document.querySelector('[aria-label="url"]'),
     submitButton: document.querySelector('[aria-label="add"]'),
-    feeds: document.querySelector('.feeds'),
-    posts: document.querySelector('.posts'),
+    feedsEl: document.querySelector('.feeds'),
+    postsEl: document.querySelector('.posts'),
     feedbackEl: document.querySelector('.feedback'),
     modalTitle: document.querySelector('.modal-title'),
     modalBody: document.querySelector('.modal-body'),
@@ -155,7 +161,7 @@ export default () => {
     }
   });
 
-  elements.posts.addEventListener('click', (e) => {
+  elements.postsEl.addEventListener('click', (e) => {
     if (e.target.hasAttribute('data-target')) {
       const curPostId = e.target.getAttribute('data-id');
       watchedState.uiState.modalPostId = curPostId;

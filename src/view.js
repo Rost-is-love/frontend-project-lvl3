@@ -1,62 +1,57 @@
 /* eslint-disable no-param-reassign */
 import i18next from 'i18next';
 import onChange from 'on-change';
-import _ from 'lodash';
 
 export default (state, elements) => {
   const {
     input,
     submitButton,
-    feeds,
-    posts,
+    feedsEl,
+    postsEl,
     feedbackEl,
     modalTitle,
     modalBody,
     modalLink,
   } = elements;
 
-  const feedRender = (value, previousValue) => {
-    const newFeed = _.differenceWith(value, previousValue, _.isEqual)[0];
+  const feedRender = (watchedState) => {
+    feedsEl.innerHTML = '';
+    const { feeds } = watchedState;
 
-    if (!feeds.querySelector('.list-group')) {
-      const newFeedsTitle = document.createElement('h2');
-      const newFeedsUl = document.createElement('ul');
-      newFeedsUl.classList.add('list-group', 'mb-5');
-      newFeedsTitle.textContent = i18next.t('titles.feeds');
-      feeds.append(newFeedsTitle);
-      feeds.append(newFeedsUl);
-    }
+    const newFeedsTitle = document.createElement('h2');
+    const newFeedsUl = document.createElement('ul');
+    newFeedsUl.classList.add('list-group', 'mb-5');
+    newFeedsTitle.textContent = i18next.t('titles.feeds');
 
-    const feedItem = document.createElement('li');
-    const feedItemTitle = document.createElement('h3');
-    const feedItemDescr = document.createElement('p');
-    const feedsList = feeds.querySelector('.list-group');
-    feedItem.classList.add('list-group-item');
-    feedItemTitle.textContent = newFeed.title;
-    feedItemDescr.textContent = newFeed.description;
-    feedItem.append(feedItemTitle);
-    feedItem.append(feedItemDescr);
-    feedsList.prepend(feedItem);
+    feeds.forEach((feed) => {
+      const feedItem = document.createElement('li');
+      const feedItemTitle = document.createElement('h3');
+      const feedItemDescr = document.createElement('p');
+      feedItem.classList.add('list-group-item');
+      feedItemTitle.textContent = feed.title;
+      feedItemDescr.textContent = feed.description;
+      feedItem.append(feedItemTitle);
+      feedItem.append(feedItemDescr);
+      newFeedsUl.prepend(feedItem);
+    });
+
+    feedsEl.append(newFeedsTitle);
+    feedsEl.append(newFeedsUl);
   };
 
-  const postsRender = (value, previousValue) => {
-    const newPosts = _.differenceWith(value, previousValue, _.isEqual);
+  const postsRender = (watchedState) => {
+    postsEl.innerHTML = '';
+    const { posts } = watchedState;
+    const { readedPosts } = watchedState.uiState;
+    const newPostsTitle = document.createElement('h2');
+    const newPosstUl = document.createElement('ul');
+    newPosstUl.classList.add('list-group');
+    newPostsTitle.textContent = i18next.t('titles.posts');
 
-    if (!posts.querySelector('.list-group')) {
-      const newPostsTitle = document.createElement('h2');
-      const newPosstUl = document.createElement('ul');
-      newPosstUl.classList.add('list-group');
-      newPostsTitle.textContent = i18next.t('titles.posts');
-      posts.append(newPostsTitle);
-      posts.append(newPosstUl);
-    }
-
-    newPosts.forEach((post) => {
-      const postsList = posts.querySelector('.list-group');
+    posts.forEach((post) => {
       const liEl = document.createElement('li');
       const linkEl = document.createElement('a');
       const btnEl = document.createElement('button');
-      const id = value.indexOf(post);
 
       liEl.classList.add(
         'list-group-item',
@@ -64,32 +59,35 @@ export default (state, elements) => {
         'justify-content-between',
         'align-items-start',
       );
-      linkEl.classList.add('font-weight-bold');
-      linkEl.setAttribute('data-id', `${id}`);
+      // prettier-ignore
+      const fontWeight = readedPosts.indexOf(post.id) === -1
+        ? 'font-weight-bold'
+        : 'font-weight-normal';
+      linkEl.classList.add(fontWeight);
+      linkEl.setAttribute('data-id', `${post.id}`);
       linkEl.setAttribute('target', '_blank');
       linkEl.setAttribute('rel', 'noopener noreferrer');
       linkEl.setAttribute('href', post.link);
       linkEl.textContent = post.title;
       btnEl.classList.add('btn', 'btn-primary', 'btn-sm');
       btnEl.setAttribute('type', 'button');
-      btnEl.setAttribute('data-id', `${id}`);
+      btnEl.setAttribute('data-id', `${post.id}`);
       btnEl.setAttribute('data-toggle', 'modal');
       btnEl.setAttribute('data-target', '#modal');
       btnEl.textContent = i18next.t('buttons.post');
 
       liEl.append(linkEl);
       liEl.append(btnEl);
-
-      if (!posts.querySelector('.list-group')) {
-        postsList.append(liEl);
-      } else {
-        postsList.prepend(liEl);
-      }
+      newPosstUl.append(liEl);
     });
+
+    postsEl.append(newPostsTitle);
+    postsEl.append(newPosstUl);
   };
 
-  const openModal = (id, watchedState) => {
-    const curPost = watchedState.posts[id];
+  const openModal = (watchedState) => {
+    const id = watchedState.uiState.modalPostId;
+    const curPost = watchedState.posts.filter((post) => post.id === id)[0];
     const titleEl = document.querySelector(`a[data-id="${id}"]`);
 
     modalTitle.textContent = curPost.title;
@@ -146,22 +144,22 @@ export default (state, elements) => {
     }
   };
 
-  const watchedState = onChange(state, (path, value, previousValue) => {
+  const watchedState = onChange(state, (path) => {
     switch (path) {
       case 'form.processState':
-        processStateHandler(value, watchedState);
+        processStateHandler(watchedState.form.processState);
         break;
       case 'form.error':
-        renderError(value);
+        renderError(watchedState.form.error);
         break;
       case 'feeds':
-        feedRender(value, previousValue);
+        feedRender(watchedState);
         break;
       case 'posts':
-        postsRender(value, previousValue);
+        postsRender(watchedState);
         break;
       case 'uiState.modalPostId':
-        openModal(value, watchedState);
+        openModal(watchedState);
         break;
       default:
         break;
