@@ -120,7 +120,7 @@ export default () => {
   const state = {
     form: {
       processState: 'filling',
-      valid: true,
+      valid: false,
       error: null,
     },
     feeds: [],
@@ -157,12 +157,13 @@ export default () => {
       watchedState.form.valid = false;
       watchedState.form.error = error;
     } else {
+      watchedState.form.valid = true;
       loadFeed(watchedState, value);
     }
   });
 
   elements.postsEl.addEventListener('click', (e) => {
-    if (e.target.hasAttribute('data-target')) {
+    if ('id' in e.target.dataset) {
       const curPostId = e.target.getAttribute('data-id');
       watchedState.uiState.modalPostId = curPostId;
     }
