@@ -70,7 +70,7 @@ const getErrorType = (err) => {
     return 'rss';
   }
 
-  throw new Error(err.message);
+  return 'undefined';
 };
 
 const checkUpdates = (watchedState) => {

@@ -6,6 +6,7 @@ export default {
         network: 'Ошибка сети',
         url: 'Ссылка должна быть валидным URL',
         feeds: 'RSS уже существует',
+        undefined: 'Неизвестная ошибка. Попробуйте снова',
       },
       successMessages: {
         feeds: 'RSS успешно загружен',
