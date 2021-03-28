@@ -11,7 +11,7 @@ const schema = yup.string().url().required();
 const validate = (value, curFeedsUrls) => {
   const expandedScheme = schema.notOneOf(curFeedsUrls);
   try {
-    expandedScheme.validateSync(value, { abortEarly: false });
+    expandedScheme.validateSync(value);
     return null;
   } catch (e) {
     const errType = e.message === 'this must be a valid URL' ? 'url' : 'feeds';
