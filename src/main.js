@@ -23,7 +23,9 @@ const parse = (data, feedUrl) => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(data, 'text/xml');
   if (doc.querySelector('parsererror')) {
-    throw new Error(`Parsing error: ${doc.querySelector('parsererror').innerHTML}`);
+    const error = new Error(`Parsing error: ${doc.querySelector('parsererror').innerHTML}`);
+    error.isParsingError = true;
+    throw error;
   }
 
   const feedTitle = doc.querySelector('title').innerHTML;
@@ -64,7 +66,7 @@ const getErrorType = (err) => {
   if (err.isAxiosError) {
     return 'network';
   }
-  if (err.message.startsWith('Parsing error')) {
+  if (err.isParsingError) {
     return 'rss';
   }
 
