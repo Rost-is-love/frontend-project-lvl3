@@ -1,8 +1,7 @@
 /* eslint-disable no-param-reassign */
-import i18next from 'i18next';
 import onChange from 'on-change';
 
-export default (state, elements) => {
+export default (state, elements, texts) => {
   const {
     input,
     submitButton,
@@ -21,7 +20,7 @@ export default (state, elements) => {
     const newFeedsTitle = document.createElement('h2');
     const newFeedsUl = document.createElement('ul');
     newFeedsUl.classList.add('list-group', 'mb-5');
-    newFeedsTitle.textContent = i18next.t('titles.feeds');
+    newFeedsTitle.textContent = texts.t('titles.feeds');
 
     feeds.forEach((feed) => {
       const feedItem = document.createElement('li');
@@ -46,7 +45,7 @@ export default (state, elements) => {
     const newPostsTitle = document.createElement('h2');
     const newPosstUl = document.createElement('ul');
     newPosstUl.classList.add('list-group');
-    newPostsTitle.textContent = i18next.t('titles.posts');
+    newPostsTitle.textContent = texts.t('titles.posts');
 
     posts.forEach((post) => {
       const liEl = document.createElement('li');
@@ -74,7 +73,7 @@ export default (state, elements) => {
       btnEl.setAttribute('data-id', `${post.id}`);
       btnEl.setAttribute('data-toggle', 'modal');
       btnEl.setAttribute('data-target', '#modal');
-      btnEl.textContent = i18next.t('buttons.post');
+      btnEl.textContent = texts.t('buttons.post');
 
       liEl.append(linkEl);
       liEl.append(btnEl);
@@ -103,7 +102,7 @@ export default (state, elements) => {
 
   const renderError = (error) => {
     feedbackEl.classList.add('text-danger');
-    feedbackEl.textContent = i18next.t(`errorMessages.${error}`);
+    feedbackEl.textContent = texts.t(`errorMessages.${error}`);
     input.classList.add('is-invalid');
   };
 
@@ -137,7 +136,7 @@ export default (state, elements) => {
       case 'finished':
         submitButton.disabled = false;
         input.readOnly = false;
-        renderSuccess(i18next.t('successMessages.feeds'));
+        renderSuccess(texts.t('successMessages.feeds'));
         break;
       default:
         throw new Error(`Unknown state: ${processState}`);

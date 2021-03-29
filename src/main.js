@@ -6,19 +6,6 @@ import _ from 'lodash';
 import resources from './locales/ru.js';
 import buildWatchedState from './view.js';
 
-const schema = yup.string().url().required();
-
-const validate = (value, curFeedsUrls) => {
-  const expandedScheme = schema.notOneOf(curFeedsUrls);
-  try {
-    expandedScheme.validateSync(value);
-    return null;
-  } catch (e) {
-    const errType = e.message === 'this must be a valid URL' ? 'url' : 'feeds';
-    return errType;
-  }
-};
-
 const parse = (data, feedUrl) => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(data, 'text/xml');
@@ -113,63 +100,88 @@ const loadFeed = (watchedState, value) => {
 };
 
 export default () => {
-  i18next.init({
-    lng: 'ru',
-    debug: false,
-    resources,
-  });
+  const texts = i18next.createInstance();
+  texts
+    .init({
+      lng: 'ru',
+      debug: false,
+      resources,
+    })
+    .then(() => {
+      yup.setLocale({
+        string: {
+          url: () => ({ key: 'url' }),
+        },
+        mixed: {
+          notOneOf: () => ({ key: 'feeds' }),
+        },
+      });
 
-  const state = {
-    form: {
-      processState: 'filling',
-      valid: false,
-      error: null,
-    },
-    feeds: [],
-    posts: [],
-    uiState: {
-      modalPostId: null,
-      readedPosts: [],
-    },
-  };
+      const state = {
+        form: {
+          processState: 'filling',
+          valid: false,
+          error: null,
+        },
+        feeds: [],
+        posts: [],
+        uiState: {
+          modalPostId: null,
+          readedPosts: [],
+        },
+      };
 
-  const elements = {
-    form: document.querySelector('.rss-form'),
-    input: document.querySelector('[aria-label="url"]'),
-    submitButton: document.querySelector('[aria-label="add"]'),
-    feedsEl: document.querySelector('.feeds'),
-    postsEl: document.querySelector('.posts'),
-    feedbackEl: document.querySelector('.feedback'),
-    modalTitle: document.querySelector('.modal-title'),
-    modalBody: document.querySelector('.modal-body'),
-    modalLink: document.querySelector('div.modal-footer > a'),
-  };
+      const elements = {
+        form: document.querySelector('.rss-form'),
+        input: document.querySelector('[aria-label="url"]'),
+        submitButton: document.querySelector('[aria-label="add"]'),
+        feedsEl: document.querySelector('.feeds'),
+        postsEl: document.querySelector('.posts'),
+        feedbackEl: document.querySelector('.feedback'),
+        modalTitle: document.querySelector('.modal-title'),
+        modalBody: document.querySelector('.modal-body'),
+        modalLink: document.querySelector('div.modal-footer > a'),
+      };
 
-  const watchedState = buildWatchedState(state, elements);
+      const schema = yup.string().url();
 
-  elements.form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const value = formData.get('url');
-    const curFeedsUrls = watchedState.feeds.map(({ url }) => url);
+      const validate = (value, curFeedsUrls) => {
+        const expandedScheme = schema.notOneOf(curFeedsUrls);
+        try {
+          expandedScheme.validateSync(value);
+          return null;
+        } catch (e) {
+          const { key } = e.message;
+          return key;
+        }
+      };
 
-    const error = validate(value, curFeedsUrls);
+      const watchedState = buildWatchedState(state, elements, texts);
 
-    if (error) {
-      watchedState.form.valid = false;
-      watchedState.form.error = error;
-    } else {
-      watchedState.form.valid = true;
-      loadFeed(watchedState, value);
-    }
-  });
+      elements.form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const value = formData.get('url');
+        const curFeedsUrls = watchedState.feeds.map(({ url }) => url);
 
-  elements.postsEl.addEventListener('click', (e) => {
-    if ('id' in e.target.dataset) {
-      const curPostId = e.target.getAttribute('data-id');
-      watchedState.uiState.modalPostId = curPostId;
-    }
-  });
+        const error = validate(value, curFeedsUrls);
 
-  setTimeout(() => checkUpdates(watchedState), 5000);
+        if (error) {
+          watchedState.form.valid = false;
+          watchedState.form.error = error;
+        } else {
+          watchedState.form.valid = true;
+          loadFeed(watchedState, value);
+        }
+      });
+
+      elements.postsEl.addEventListener('click', (e) => {
+        if ('id' in e.target.dataset) {
+          const curPostId = e.target.getAttribute('data-id');
+          watchedState.uiState.modalPostId = curPostId;
+        }
+      });
+
+      setTimeout(() => checkUpdates(watchedState), 5000);
+    });
 };
