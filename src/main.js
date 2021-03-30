@@ -84,10 +84,8 @@ const checkUpdates = (watchedState) => {
       }
       setTimeout(() => checkUpdates(watchedState), 5000);
     })
-    .catch((err) => {
-      const errType = getErrorType(err);
-      watchedState.form.error = errType;
-      watchedState.form.processState = 'failed';
+    .catch(() => {
+      setTimeout(() => checkUpdates(watchedState), 5000);
     });
 };
 
