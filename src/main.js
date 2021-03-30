@@ -23,12 +23,10 @@ const parse = (data, feedUrl) => {
     const title = item.querySelector('title').innerHTML;
     const description = item.querySelector('description').innerHTML;
     const link = item.querySelector('link').innerHTML;
-    const id = _.uniqueId();
     return {
       title,
       description,
       link,
-      id,
     };
   });
 
@@ -37,6 +35,18 @@ const parse = (data, feedUrl) => {
     posts: items,
   };
 };
+
+// prettier-ignore
+const setPostId = (posts) => posts.map((post) => {
+  const { title, description, link } = post;
+  const id = _.uniqueId();
+  return {
+    title,
+    description,
+    link,
+    id,
+  };
+});
 
 const buildUrl = (rssUrl) => {
   const proxy = 'https://hexlet-allorigins.herokuapp.com';
@@ -69,7 +79,8 @@ const checkUpdates = (watchedState) => {
         return _.differenceBy(data.posts, watchedState.posts, 'title');
       });
       if (newPosts.length !== 0) {
-        watchedState.posts = [...newPosts, ...watchedState.posts];
+        const postsWithId = setPostId(newPosts);
+        watchedState.posts = [...postsWithId, ...watchedState.posts];
       }
       setTimeout(() => checkUpdates(watchedState), 5000);
     })
@@ -86,8 +97,9 @@ const loadFeed = (watchedState, value) => {
     .get(buildUrl(value))
     .then((response) => {
       const data = parse(response.data.contents, value);
+      const postsWithId = setPostId(data.posts);
       watchedState.feeds = [...watchedState.feeds, ...data.feeds];
-      watchedState.posts = [...data.posts, ...watchedState.posts];
+      watchedState.posts = [...postsWithId, ...watchedState.posts];
     })
     .then(() => {
       watchedState.form.processState = 'finished';
