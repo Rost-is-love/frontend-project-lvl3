@@ -24,13 +24,10 @@ export default (state, elements, texts) => {
 
     feeds.forEach((feed) => {
       const feedItem = document.createElement('li');
-      const feedItemTitle = document.createElement('h3');
-      const feedItemDescr = document.createElement('p');
       feedItem.classList.add('list-group-item');
-      feedItemTitle.textContent = feed.title;
-      feedItemDescr.textContent = feed.description;
-      feedItem.append(feedItemTitle);
-      feedItem.append(feedItemDescr);
+      const feedItemTitle = `<h3>${feed.title}</h3>`;
+      const feedItemDescr = `<p>${feed.description}</p>`;
+      feedItem.innerHTML = `${feedItemTitle}${feedItemDescr}`;
       newFeedsUl.prepend(feedItem);
     });
 
@@ -49,8 +46,6 @@ export default (state, elements, texts) => {
 
     posts.forEach((post) => {
       const liEl = document.createElement('li');
-      const linkEl = document.createElement('a');
-      const btnEl = document.createElement('button');
 
       liEl.classList.add(
         'list-group-item',
@@ -58,25 +53,36 @@ export default (state, elements, texts) => {
         'justify-content-between',
         'align-items-start',
       );
+
       // prettier-ignore
       const fontWeight = readedPosts.indexOf(post.id) === -1
         ? 'font-weight-bold'
         : 'font-weight-normal';
-      linkEl.classList.add(fontWeight);
-      linkEl.setAttribute('data-id', `${post.id}`);
-      linkEl.setAttribute('target', '_blank');
-      linkEl.setAttribute('rel', 'noopener noreferrer');
-      linkEl.setAttribute('href', post.link);
-      linkEl.textContent = post.title;
-      btnEl.classList.add('btn', 'btn-primary', 'btn-sm');
-      btnEl.setAttribute('type', 'button');
-      btnEl.setAttribute('data-id', `${post.id}`);
-      btnEl.setAttribute('data-toggle', 'modal');
-      btnEl.setAttribute('data-target', '#modal');
-      btnEl.textContent = texts.t('buttons.post');
+      const linkEl = `
+        <a
+          class=${fontWeight}
+          data-id='${post.id}'
+          target='_blank'
+          rel='noopener noreferrer'
+          href='${post.link}'
+        >
+          ${post.title}
+        </a>
+      `;
 
-      liEl.append(linkEl);
-      liEl.append(btnEl);
+      const btnEl = `
+        <button
+          class='btn btn-primary btn-sm'
+          type='button'
+          data-id='${post.id}'
+          data-toggle='modal'
+          data-target='#modal'
+        >
+          Просмотр
+        </button>
+      `;
+
+      liEl.innerHTML = `${linkEl}${btnEl}`;
       newPosstUl.append(liEl);
     });
 
