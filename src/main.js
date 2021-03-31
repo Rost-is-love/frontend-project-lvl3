@@ -71,8 +71,8 @@ const getErrorType = (err) => {
 };
 
 const checkUpdates = (watchedState) => {
-  const requestes = watchedState.feeds.map((feed) => axios.get(buildUrl(feed.url)));
-  Promise.all(requestes)
+  const promises = watchedState.feeds
+    .map((feed) => axios.get(buildUrl(feed.url)))
     .then((response) => {
       const newPosts = response.flatMap((feed) => {
         const data = parse(feed.data.contents);
@@ -82,11 +82,13 @@ const checkUpdates = (watchedState) => {
         const postsWithId = setPostId(newPosts);
         watchedState.posts = [...postsWithId, ...watchedState.posts];
       }
-      setTimeout(() => checkUpdates(watchedState), 5000);
     })
-    .catch(() => {
-      setTimeout(() => checkUpdates(watchedState), 5000);
+    .catch((e) => {
+      console.log(e.message);
     });
+  Promise.all(promises).finally(() => {
+    setTimeout(() => checkUpdates(watchedState), 5000);
+  });
 };
 
 const loadFeed = (watchedState, value) => {
@@ -98,8 +100,6 @@ const loadFeed = (watchedState, value) => {
       const postsWithId = setPostId(data.posts);
       watchedState.feeds = [...watchedState.feeds, ...data.feeds];
       watchedState.posts = [...postsWithId, ...watchedState.posts];
-    })
-    .then(() => {
       watchedState.form.processState = 'finished';
     })
     .catch((err) => {
