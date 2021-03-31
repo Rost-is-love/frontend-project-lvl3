@@ -71,21 +71,18 @@ const getErrorType = (err) => {
 };
 
 const checkUpdates = (watchedState) => {
-  const promises = watchedState.feeds
-    .map((feed) => axios.get(buildUrl(feed.url)))
+  const { feeds } = watchedState;
+  // prettier-ignore
+  const promises = feeds.map((feed) => axios.get(buildUrl(feed.url))
     .then((response) => {
-      const newPosts = response.flatMap((feed) => {
-        const data = parse(feed.data.contents);
-        return _.differenceBy(data.posts, watchedState.posts, 'title');
-      });
+      const data = parse(response.data.contents);
+      const newPosts = _.differenceBy(data.posts, watchedState.posts, 'title');
       if (newPosts.length !== 0) {
         const postsWithId = setPostId(newPosts);
         watchedState.posts = [...postsWithId, ...watchedState.posts];
       }
     })
-    .catch((e) => {
-      console.log(e.message);
-    });
+    .catch((e) => console.log(e.message)));
   Promise.all(promises).finally(() => {
     setTimeout(() => checkUpdates(watchedState), 5000);
   });
