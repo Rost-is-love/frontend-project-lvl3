@@ -82,7 +82,7 @@ const checkUpdates = (watchedState) => {
         watchedState.posts = [...postsWithId, ...watchedState.posts];
       }
     })
-    .catch((e) => console.log(e.message)));
+    .catch((e) => console.log(e)));
   Promise.all(promises).finally(() => {
     setTimeout(() => checkUpdates(watchedState), 5000);
   });
