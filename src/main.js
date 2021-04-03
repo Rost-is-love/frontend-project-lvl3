@@ -15,14 +15,14 @@ const parse = (data, feedUrl) => {
     throw error;
   }
 
-  const feedTitle = doc.querySelector('title').innerHTML;
-  const feedDscr = doc.querySelector('description').innerHTML;
+  const feedTitle = doc.querySelector('title').textContent;
+  const feedDscr = doc.querySelector('description').textContent;
   const itemsEl = doc.querySelectorAll('item');
 
   const items = Array.from(itemsEl).map((item) => {
-    const title = item.querySelector('title').innerHTML;
-    const description = item.querySelector('description').innerHTML;
-    const link = item.querySelector('link').innerHTML;
+    const title = item.querySelector('title').textContent;
+    const description = item.querySelector('description').textContent;
+    const link = item.querySelector('link').textContent;
     return {
       title,
       description,
