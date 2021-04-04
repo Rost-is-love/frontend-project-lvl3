@@ -36,6 +36,17 @@ export default (state, elements, texts) => {
 
     feedsEl.append(newFeedsTitle);
     feedsEl.append(newFeedsUl);
+
+    feedbackEl.classList.add('text-success');
+    feedbackEl.textContent = texts.t('successMessages.feeds');
+
+    if (feedbackEl.classList.contains('text-danger')) {
+      feedbackEl.classList.remove('text-danger');
+      input.classList.remove('is-invalid');
+    }
+
+    input.value = '';
+    input.focus();
   };
 
   const postsRender = (watchedState) => {
@@ -99,19 +110,6 @@ export default (state, elements, texts) => {
     input.classList.add('is-invalid');
   };
 
-  const renderSuccess = (message) => {
-    feedbackEl.classList.add('text-success');
-    feedbackEl.textContent = message;
-
-    if (feedbackEl.classList.contains('text-danger')) {
-      feedbackEl.classList.remove('text-danger');
-      input.classList.remove('is-invalid');
-    }
-
-    input.value = '';
-    input.focus();
-  };
-
   const handleProcessState = (watchedState) => {
     switch (watchedState.form.processState) {
       case 'failed':
@@ -130,7 +128,6 @@ export default (state, elements, texts) => {
       case 'finished':
         submitButton.disabled = false;
         input.readOnly = false;
-        renderSuccess(texts.t('successMessages.feeds'));
         break;
       default:
         throw new Error(`Unknown state: ${watchedState.form.processState}`);
