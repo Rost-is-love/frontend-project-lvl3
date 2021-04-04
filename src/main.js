@@ -198,6 +198,7 @@ export default () => {
         if ('id' in e.target.dataset) {
           const curPostId = e.target.getAttribute('data-id');
           watchedState.uiState.modalPostId = curPostId;
+          watchedState.uiState.readedPosts.push(curPostId);
         }
       });
 

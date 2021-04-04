@@ -96,7 +96,6 @@ export default (state, elements, texts) => {
     if (watchedState.uiState.readedPosts.indexOf(id) === -1) {
       titleEl.classList.remove('font-weight-bold');
       titleEl.classList.add('font-weight-normal');
-      watchedState.uiState.readedPosts.push(id);
     }
   };
 
