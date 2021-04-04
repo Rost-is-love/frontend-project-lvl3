@@ -6,7 +6,7 @@ import _ from 'lodash';
 import resources from './locales/ru.js';
 import buildWatchedState from './view.js';
 
-const parse = (data, feedUrl) => {
+const parse = (data) => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(data, 'text/xml');
   if (doc.querySelector('parsererror')) {
@@ -30,23 +30,34 @@ const parse = (data, feedUrl) => {
     };
   });
 
-  return {
-    feeds: [{ title: feedTitle, description: feedDscr, url: feedUrl }],
-    posts: items,
-  };
+  return { title: feedTitle, description: feedDscr, items };
 };
 
 // prettier-ignore
-const setPostId = (posts) => posts.map((post) => {
-  const { title, description, link } = post;
-  const id = _.uniqueId();
+const normalize = (data, feedUrl, id = null) => {
+  const feedId = id ?? _.uniqueId();
+  const posts = data.items.map((item) => {
+    const { title, description, link } = item;
+    const postId = _.uniqueId();
+    return {
+      title,
+      description,
+      link,
+      feedId,
+      id: postId,
+    };
+  });
+
   return {
-    title,
-    description,
-    link,
-    id,
+    feed: [{
+      title: data.title,
+      description: data.description,
+      url: feedUrl,
+      feedId,
+    }],
+    posts,
   };
-});
+};
 
 const buildUrl = (rssUrl) => {
   const proxy = 'https://hexlet-allorigins.herokuapp.com';
@@ -75,12 +86,13 @@ const checkUpdates = (watchedState) => {
   // prettier-ignore
   const promises = feeds.map((feed) => axios.get(buildUrl(feed.url))
     .then((response) => {
-      const data = parse(response.data.contents);
-      const newPosts = _.differenceBy(data.posts, watchedState.posts, 'title');
-      if (newPosts.length !== 0) {
-        const postsWithId = setPostId(newPosts);
-        watchedState.posts = [...postsWithId, ...watchedState.posts];
-      }
+      const roughData = parse(response.data.contents);
+      const data = normalize(roughData, feed.url, feed.feedId);
+      const curFeedPosts = watchedState.posts.filter((post) => feed.feedId === post.feedId);
+      console.log(curFeedPosts, 'curFeedPosts');
+      console.log(data.posts, 'data.posts');
+      const newPosts = _.differenceBy(data.posts, curFeedPosts, 'link');
+      watchedState.posts = [...newPosts, ...watchedState.posts];
     })
     .catch((e) => console.log(e)));
   Promise.all(promises).finally(() => {
@@ -93,13 +105,14 @@ const loadFeed = (watchedState, value) => {
   axios
     .get(buildUrl(value))
     .then((response) => {
-      const data = parse(response.data.contents, value);
-      const postsWithId = setPostId(data.posts);
-      watchedState.feeds = [...watchedState.feeds, ...data.feeds];
-      watchedState.posts = [...postsWithId, ...watchedState.posts];
+      const roughData = parse(response.data.contents);
+      const data = normalize(roughData, value);
+      watchedState.feeds = [...watchedState.feeds, ...data.feed];
+      watchedState.posts = [...data.posts, ...watchedState.posts];
       watchedState.form.processState = 'finished';
     })
     .catch((err) => {
+      console.log(err);
       const errType = getErrorType(err);
       watchedState.form.error = errType;
       watchedState.form.processState = 'failed';
