@@ -4,6 +4,7 @@ import axios from 'axios';
 import i18next from 'i18next';
 import _ from 'lodash';
 import resources from './locales/ru.js';
+import yupLocale from './locales/yup.js';
 import buildWatchedState from './view.js';
 
 const parse = (data) => {
@@ -126,14 +127,7 @@ export default () => {
       resources,
     })
     .then(() => {
-      yup.setLocale({
-        string: {
-          url: () => ({ key: 'url' }),
-        },
-        mixed: {
-          notOneOf: () => ({ key: 'feeds' }),
-        },
-      });
+      yup.setLocale(yupLocale);
 
       const state = {
         form: {
