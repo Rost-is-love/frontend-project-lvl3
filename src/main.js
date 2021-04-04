@@ -187,6 +187,7 @@ export default () => {
         if (error) {
           watchedState.form.valid = false;
           watchedState.form.error = error;
+          watchedState.form.processState = 'failed';
         } else {
           watchedState.form.valid = true;
           loadFeed(watchedState, value);

@@ -119,11 +119,12 @@ export default (state, elements, texts) => {
     input.focus();
   };
 
-  const handleProcessState = (processState) => {
-    switch (processState) {
+  const handleProcessState = (watchedState) => {
+    switch (watchedState.form.processState) {
       case 'failed':
         submitButton.disabled = false;
         input.readOnly = false;
+        renderError(watchedState.form.error);
         break;
       case 'filling':
         submitButton.disabled = false;
@@ -139,17 +140,14 @@ export default (state, elements, texts) => {
         renderSuccess(texts.t('successMessages.feeds'));
         break;
       default:
-        throw new Error(`Unknown state: ${processState}`);
+        throw new Error(`Unknown state: ${watchedState.form.processState}`);
     }
   };
 
   const watchedState = onChange(state, (path) => {
     switch (path) {
       case 'form.processState':
-        handleProcessState(watchedState.form.processState);
-        break;
-      case 'form.error':
-        renderError(watchedState.form.error);
+        handleProcessState(watchedState);
         break;
       case 'feeds':
         feedRender(watchedState);
