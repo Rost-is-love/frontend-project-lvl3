@@ -119,7 +119,7 @@ export default (state, elements, texts) => {
     input.focus();
   };
 
-  const processStateHandler = (processState) => {
+  const handleProcessState = (processState) => {
     switch (processState) {
       case 'failed':
         submitButton.disabled = false;
@@ -146,7 +146,7 @@ export default (state, elements, texts) => {
   const watchedState = onChange(state, (path) => {
     switch (path) {
       case 'form.processState':
-        processStateHandler(watchedState.form.processState);
+        handleProcessState(watchedState.form.processState);
         break;
       case 'form.error':
         renderError(watchedState.form.error);
