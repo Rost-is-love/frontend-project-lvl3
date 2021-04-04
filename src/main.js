@@ -118,8 +118,8 @@ const loadFeed = (watchedState, value) => {
 };
 
 export default () => {
-  const texts = i18next.createInstance();
-  texts
+  const i18n = i18next.createInstance();
+  i18n
     .init({
       lng: 'ru',
       debug: false,
@@ -174,7 +174,7 @@ export default () => {
         }
       };
 
-      const watchedState = buildWatchedState(state, elements, texts);
+      const watchedState = buildWatchedState(state, elements, i18n);
 
       elements.form.addEventListener('submit', (e) => {
         e.preventDefault();

@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import onChange from 'on-change';
 
-export default (state, elements, texts) => {
+export default (state, elements, i18n) => {
   const {
     input,
     submitButton,
@@ -20,7 +20,7 @@ export default (state, elements, texts) => {
     const newFeedsTitle = document.createElement('h2');
     const newFeedsUl = document.createElement('ul');
     newFeedsUl.classList.add('list-group', 'mb-5');
-    newFeedsTitle.textContent = texts.t('titles.feeds');
+    newFeedsTitle.textContent = i18n.t('titles.feeds');
 
     feeds.forEach((feed) => {
       const feedItem = document.createElement('li');
@@ -38,7 +38,7 @@ export default (state, elements, texts) => {
     feedsEl.append(newFeedsUl);
 
     feedbackEl.classList.add('text-success');
-    feedbackEl.textContent = texts.t('successMessages.feeds');
+    feedbackEl.textContent = i18n.t('successMessages.feeds');
 
     if (feedbackEl.classList.contains('text-danger')) {
       feedbackEl.classList.remove('text-danger');
@@ -56,7 +56,7 @@ export default (state, elements, texts) => {
     const newPostsTitle = document.createElement('h2');
     const newPosstUl = document.createElement('ul');
     newPosstUl.classList.add('list-group');
-    newPostsTitle.textContent = texts.t('titles.posts');
+    newPostsTitle.textContent = i18n.t('titles.posts');
 
     posts.forEach((post) => {
       const liEl = document.createElement('li');
@@ -84,7 +84,7 @@ export default (state, elements, texts) => {
       btnEl.setAttribute('data-id', `${post.id}`);
       btnEl.setAttribute('data-toggle', 'modal');
       btnEl.setAttribute('data-target', '#modal');
-      btnEl.textContent = texts.t('buttons.post');
+      btnEl.textContent = i18n.t('buttons.post');
 
       liEl.append(linkEl);
       liEl.append(btnEl);
@@ -106,7 +106,7 @@ export default (state, elements, texts) => {
 
   const renderError = (error) => {
     feedbackEl.classList.add('text-danger');
-    feedbackEl.textContent = texts.t(`errorMessages.${error}`);
+    feedbackEl.textContent = i18n.t(`errorMessages.${error}`);
     input.classList.add('is-invalid');
   };
 
