@@ -197,8 +197,8 @@ export default () => {
       elements.postsEl.addEventListener('click', (e) => {
         if ('id' in e.target.dataset) {
           const curPostId = e.target.getAttribute('data-id');
-          watchedState.uiState.modalPostId = curPostId;
           watchedState.uiState.readedPosts.push(curPostId);
+          watchedState.uiState.modalPostId = curPostId;
         }
       });
 

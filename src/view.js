@@ -87,16 +87,10 @@ export default (state, elements, texts) => {
   const openModal = (watchedState) => {
     const id = watchedState.uiState.modalPostId;
     const curPost = watchedState.posts.find((post) => post.id === id);
-    const titleEl = document.querySelector(`a[data-id="${id}"]`);
 
     modalTitle.textContent = curPost.title;
     modalBody.textContent = curPost.description;
     modalLink.setAttribute('href', curPost.link);
-
-    if (watchedState.uiState.readedPosts.indexOf(id) === -1) {
-      titleEl.classList.remove('font-weight-bold');
-      titleEl.classList.add('font-weight-normal');
-    }
   };
 
   const renderError = (error) => {
@@ -155,6 +149,7 @@ export default (state, elements, texts) => {
         postsRender(watchedState);
         break;
       case 'uiState.modalPostId':
+        postsRender(watchedState);
         openModal(watchedState);
         break;
       default:
