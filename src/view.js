@@ -86,7 +86,7 @@ export default (state, elements, texts) => {
 
   const openModal = (watchedState) => {
     const id = watchedState.uiState.modalPostId;
-    const curPost = watchedState.posts.filter((post) => post.id === id)[0];
+    const curPost = watchedState.posts.find((post) => post.id === id);
     const titleEl = document.querySelector(`a[data-id="${id}"]`);
 
     modalTitle.textContent = curPost.title;
