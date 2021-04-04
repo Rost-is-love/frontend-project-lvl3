@@ -89,8 +89,6 @@ const checkUpdates = (watchedState) => {
       const roughData = parse(response.data.contents);
       const data = normalize(roughData, feed.url, feed.feedId);
       const curFeedPosts = watchedState.posts.filter((post) => feed.feedId === post.feedId);
-      console.log(curFeedPosts, 'curFeedPosts');
-      console.log(data.posts, 'data.posts');
       const newPosts = _.differenceBy(data.posts, curFeedPosts, 'link');
       watchedState.posts = [...newPosts, ...watchedState.posts];
     })
