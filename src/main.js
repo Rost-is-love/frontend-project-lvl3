@@ -34,32 +34,6 @@ const parse = (data) => {
   return { title: feedTitle, description: feedDscr, items };
 };
 
-// prettier-ignore
-const normalize = (data, feedUrl, id = null) => {
-  const feedId = id ?? _.uniqueId();
-  const posts = data.items.map((item) => {
-    const { title, description, link } = item;
-    const postId = _.uniqueId();
-    return {
-      title,
-      description,
-      link,
-      feedId,
-      id: postId,
-    };
-  });
-
-  return {
-    feed: [{
-      title: data.title,
-      description: data.description,
-      url: feedUrl,
-      feedId,
-    }],
-    posts,
-  };
-};
-
 const buildUrl = (rssUrl) => {
   const proxy = 'https://hexlet-allorigins.herokuapp.com';
   const proxyApi = '/get';
@@ -87,10 +61,20 @@ const checkUpdates = (watchedState) => {
   // prettier-ignore
   const promises = feeds.map((feed) => axios.get(buildUrl(feed.url))
     .then((response) => {
-      const roughData = parse(response.data.contents);
-      const data = normalize(roughData, feed.url, feed.feedId);
+      const data = parse(response.data.contents);
       const curFeedPosts = watchedState.posts.filter((post) => feed.feedId === post.feedId);
-      const newPosts = _.differenceBy(data.posts, curFeedPosts, 'link');
+      const newItems = _.differenceBy(data.items, curFeedPosts, 'link');
+      const newPosts = newItems.map((item) => {
+        const { title, description, link } = item;
+        const postId = _.uniqueId();
+        return {
+          title,
+          description,
+          link,
+          feedId: feed.feedId,
+          id: postId,
+        };
+      });
       watchedState.posts = [...newPosts, ...watchedState.posts];
     })
     .catch((e) => console.log(e)));
@@ -104,10 +88,27 @@ const loadFeed = (watchedState, url) => {
   axios
     .get(buildUrl(url))
     .then((response) => {
-      const roughData = parse(response.data.contents);
-      const data = normalize(roughData, url);
-      watchedState.feeds = [...watchedState.feeds, ...data.feed];
-      watchedState.posts = [...data.posts, ...watchedState.posts];
+      const data = parse(response.data.contents);
+      const feedId = _.uniqueId();
+      const feed = {
+        title: data.title,
+        description: data.description,
+        url,
+        feedId,
+      };
+      const posts = data.items.map((item) => {
+        const { title, description, link } = item;
+        const postId = _.uniqueId();
+        return {
+          title,
+          description,
+          link,
+          feedId,
+          id: postId,
+        };
+      });
+      watchedState.feeds = [...watchedState.feeds, feed];
+      watchedState.posts = [...posts, ...watchedState.posts];
       watchedState.form.processState = 'finished';
     })
     .catch((err) => {
