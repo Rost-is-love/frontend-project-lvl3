@@ -99,13 +99,13 @@ const checkUpdates = (watchedState) => {
   });
 };
 
-const loadFeed = (watchedState, value) => {
+const loadFeed = (watchedState, url) => {
   watchedState.form.processState = 'sending';
   axios
-    .get(buildUrl(value))
+    .get(buildUrl(url))
     .then((response) => {
       const roughData = parse(response.data.contents);
-      const data = normalize(roughData, value);
+      const data = normalize(roughData, url);
       watchedState.feeds = [...watchedState.feeds, ...data.feed];
       watchedState.posts = [...data.posts, ...watchedState.posts];
       watchedState.form.processState = 'finished';
@@ -157,7 +157,8 @@ export default () => {
 
       const schema = yup.string().url();
 
-      const validate = (value, curFeedsUrls) => {
+      const validate = (value, watchedState) => {
+        const curFeedsUrls = watchedState.feeds.map(({ url }) => url);
         const expandedScheme = schema.notOneOf(curFeedsUrls);
         try {
           expandedScheme.validateSync(value);
@@ -173,10 +174,8 @@ export default () => {
       elements.form.addEventListener('submit', (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
-        const value = formData.get('url');
-        const curFeedsUrls = watchedState.feeds.map(({ url }) => url);
-
-        const error = validate(value, curFeedsUrls);
+        const url = formData.get('url');
+        const error = validate(url, watchedState);
 
         if (error) {
           watchedState.form.valid = false;
@@ -184,7 +183,7 @@ export default () => {
           watchedState.form.processState = 'failed';
         } else {
           watchedState.form.valid = true;
-          loadFeed(watchedState, value);
+          loadFeed(watchedState, url);
         }
       });
 
