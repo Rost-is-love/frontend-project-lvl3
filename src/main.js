@@ -139,7 +139,7 @@ export default () => {
         posts: [],
         uiState: {
           modalPostId: null,
-          readedPosts: [],
+          readedPosts: new Set(),
         },
       };
 
@@ -190,7 +190,7 @@ export default () => {
       elements.postsEl.addEventListener('click', (e) => {
         if ('id' in e.target.dataset) {
           const curPostId = e.target.getAttribute('data-id');
-          watchedState.uiState.readedPosts.push(curPostId);
+          watchedState.uiState.readedPosts.add(curPostId);
           watchedState.uiState.modalPostId = curPostId;
         }
       });

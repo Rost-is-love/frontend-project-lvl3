@@ -70,9 +70,9 @@ export default (state, elements, i18n) => {
         'align-items-start',
       );
       // prettier-ignore
-      const fontWeight = readedPosts.indexOf(post.id) === -1
-        ? 'font-weight-bold'
-        : 'font-weight-normal';
+      const fontWeight = readedPosts.has(post.id)
+        ? 'font-weight-normal'
+        : 'font-weight-bold';
       linkEl.classList.add(fontWeight);
       linkEl.setAttribute('data-id', `${post.id}`);
       linkEl.setAttribute('target', '_blank');
