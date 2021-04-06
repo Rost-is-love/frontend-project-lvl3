@@ -146,8 +146,10 @@ export default (state, elements, i18n) => {
         postsRender(watchedState);
         break;
       case 'uiState.modalPostId':
-        postsRender(watchedState);
         openModal(watchedState);
+        break;
+      case 'uiState.readedPosts':
+        postsRender(watchedState);
         break;
       default:
         break;
