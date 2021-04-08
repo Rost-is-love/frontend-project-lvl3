@@ -31,22 +31,11 @@ export default (state, elements, i18n) => {
       feedItemDescr.textContent = feed.description;
       feedItem.append(feedItemTitle);
       feedItem.append(feedItemDescr);
-      newFeedsUl.prepend(feedItem);
+      newFeedsUl.append(feedItem);
     });
 
     feedsEl.append(newFeedsTitle);
     feedsEl.append(newFeedsUl);
-
-    feedbackEl.classList.add('text-success');
-    feedbackEl.textContent = i18n.t('successMessages.feeds');
-
-    if (feedbackEl.classList.contains('text-danger')) {
-      feedbackEl.classList.remove('text-danger');
-      input.classList.remove('is-invalid');
-    }
-
-    input.value = '';
-    input.focus();
   };
 
   const postsRender = (watchedState) => {
@@ -104,18 +93,14 @@ export default (state, elements, i18n) => {
     modalLink.setAttribute('href', curPost.link);
   };
 
-  const renderError = (error) => {
-    feedbackEl.classList.add('text-danger');
-    feedbackEl.textContent = i18n.t(`errorMessages.${error}`);
-    input.classList.add('is-invalid');
-  };
-
   const handleProcessState = (watchedState) => {
     switch (watchedState.form.processState) {
       case 'failed':
         submitButton.disabled = false;
         input.readOnly = false;
-        renderError(watchedState.form.error);
+        feedbackEl.classList.add('text-danger');
+        feedbackEl.textContent = i18n.t(`errorMessages.${watchedState.form.error}`);
+        input.classList.add('is-invalid');
         break;
       case 'filling':
         submitButton.disabled = false;
@@ -128,6 +113,16 @@ export default (state, elements, i18n) => {
       case 'finished':
         submitButton.disabled = false;
         input.readOnly = false;
+        feedbackEl.classList.add('text-success');
+        feedbackEl.textContent = i18n.t('successMessages.feeds');
+
+        if (feedbackEl.classList.contains('text-danger')) {
+          feedbackEl.classList.remove('text-danger');
+          input.classList.remove('is-invalid');
+        }
+
+        input.value = '';
+        input.focus();
         break;
       default:
         throw new Error(`Unknown state: ${watchedState.form.processState}`);
