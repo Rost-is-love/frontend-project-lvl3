@@ -39,7 +39,6 @@ export default (state, elements, i18n) => {
   };
 
   const postsRender = (watchedState) => {
-    postsEl.innerHTML = '';
     const { posts } = watchedState;
     const { readedPosts } = watchedState.uiState;
     const newPostsTitle = document.createElement('h2');
@@ -80,6 +79,7 @@ export default (state, elements, i18n) => {
       newPosstUl.append(liEl);
     });
 
+    postsEl.innerHTML = '';
     postsEl.append(newPostsTitle);
     postsEl.append(newPosstUl);
   };
