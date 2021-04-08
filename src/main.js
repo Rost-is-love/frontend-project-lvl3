@@ -82,7 +82,7 @@ const checkUpdates = (watchedState) => {
     setTimeout(() => checkUpdates(watchedState), 5000);
   });
 };
-
+// prettier-ignore
 const loadFeed = (watchedState, url) => {
   watchedState.form.processState = 'sending';
   axios
@@ -91,20 +91,13 @@ const loadFeed = (watchedState, url) => {
       const data = parse(response.data.contents);
       const feedId = _.uniqueId();
       const feed = {
-        title: data.title,
-        description: data.description,
-        url,
-        feedId,
+        title: data.title, description: data.description, url, feedId,
       };
       const posts = data.items.map((item) => {
         const { title, description, link } = item;
         const postId = _.uniqueId();
         return {
-          title,
-          description,
-          link,
-          feedId,
-          id: postId,
+          title, description, link, feedId, id: postId,
         };
       });
       watchedState.feeds = [feed, ...watchedState.feeds];
@@ -112,7 +105,6 @@ const loadFeed = (watchedState, url) => {
       watchedState.form.processState = 'finished';
     })
     .catch((err) => {
-      console.log(err);
       const errType = getErrorType(err);
       watchedState.form.error = errType;
       watchedState.form.processState = 'failed';
