@@ -107,7 +107,7 @@ const loadFeed = (watchedState, url) => {
           id: postId,
         };
       });
-      watchedState.feeds = [...watchedState.feeds, feed];
+      watchedState.feeds = [feed, ...watchedState.feeds];
       watchedState.posts = [...posts, ...watchedState.posts];
       watchedState.form.processState = 'finished';
     })
