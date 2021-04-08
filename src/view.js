@@ -13,7 +13,7 @@ export default (state, elements, i18n) => {
     modalLink,
   } = elements;
 
-  const feedRender = (watchedState) => {
+  const renderFeeds = (watchedState) => {
     feedsEl.innerHTML = '';
     const { feeds } = watchedState;
 
@@ -38,7 +38,7 @@ export default (state, elements, i18n) => {
     feedsEl.append(newFeedsUl);
   };
 
-  const postsRender = (watchedState) => {
+  const renderPosts = (watchedState) => {
     const { posts } = watchedState;
     const { readedPosts } = watchedState.uiState;
     const newPostsTitle = document.createElement('h2');
@@ -135,16 +135,16 @@ export default (state, elements, i18n) => {
         handleProcessState(watchedState);
         break;
       case 'feeds':
-        feedRender(watchedState);
+        renderFeeds(watchedState);
         break;
       case 'posts':
-        postsRender(watchedState);
+        renderPosts(watchedState);
         break;
       case 'uiState.modalPostId':
         openModal(watchedState);
         break;
       case 'uiState.readedPosts':
-        postsRender(watchedState);
+        renderPosts(watchedState);
         break;
       default:
         break;
