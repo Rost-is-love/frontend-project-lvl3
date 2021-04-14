@@ -56,9 +56,9 @@ const getErrorType = (err) => {
   return 'undefined';
 };
 
+// prettier-ignore
 const checkUpdates = (watchedState) => {
   const { feeds } = watchedState;
-  // prettier-ignore
   const promises = feeds.map((feed) => axios.get(buildUrl(feed.url))
     .then((response) => {
       const data = parse(response.data.contents);
@@ -82,6 +82,7 @@ const checkUpdates = (watchedState) => {
     setTimeout(() => checkUpdates(watchedState), 5000);
   });
 };
+
 // prettier-ignore
 const loadFeed = (watchedState, url) => {
   watchedState.form.processState = 'sending';
