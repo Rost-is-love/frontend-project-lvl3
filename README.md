@@ -9,5 +9,11 @@ _Rss Reader is a service for aggregating RSS feeds, with the help of which it is
 ## [Click here](https://frontend-project-lvl3-rost-is-love.vercel.app/)
 
 ![alt tag](https://telegra.ph/file/f70175da22363f41f3e72.png)
-![alt tag](https://telegra.ph/file/bd785e2047cb627cd86d6.png 'Add feeds')
-![alt tag](https://telegra.ph/file/8a2270cebc524578f826b.png 'Read posts')
+
+### Add feeds
+
+![alt tag](https://telegra.ph/file/bd785e2047cb627cd86d6.png)
+
+### Read posts
+
+![alt tag](https://telegra.ph/file/8a2270cebc524578f826b.png)
